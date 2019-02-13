@@ -3,8 +3,6 @@ import { saveLanguages, saveSkills, saveHobbies } from './seeder';
 
 export default class Database {
 
-    static name = 'wizard';
-    static version = 1;
     static instance = null;
     static connection = null;
 
@@ -14,7 +12,7 @@ export default class Database {
 
             try {
                 if (indexedDB) {
-                    const connection = indexedDB.open(Database.name, Database.version);
+                    const connection = indexedDB.open(process.env.REACT_APP_DB_NAME, process.env.REACT_APP_DB_VERSION);
                     let migrated = false;
 
                     connection.onupgradeneeded = async (e) => {
