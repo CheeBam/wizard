@@ -29,10 +29,6 @@ export function* saveUserSaga(data) {
             payload: response,
         });
 
-        yield put({
-            type: DELETE_DRAFT_USER,
-        });
-
     } catch (err) {
         console.error(err);
         yield put({
