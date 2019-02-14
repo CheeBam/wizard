@@ -3,5 +3,6 @@ export {
     required as requiredValidation,
     confirmPassword as confirmPasswordValidation,
     minLength as minLengthValidation,
-    maxLength as maxLengthValidation
+    maxLength as maxLengthValidation,
+    isPhone as isPhoneValidation,
 } from './validations';

@@ -11,7 +11,23 @@ export function isEmail(email) {
         email.toLowerCase()
     )
         ? null
-        : 'validation.error.invalid_email';
+        : 'Invalid email';
+}
+
+export function isPhone(phone) {
+    console.log('is phone', phone);
+    if (!phone) {
+        phone = '';
+    }
+    // eslint-disable-next-line
+    const x = /(^(\+7)?[\s\-]?\([0-9]{3}\)[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2})$/.test(
+        phone.toLowerCase()
+    )
+        ? null
+        : 'Invalid phone';
+
+    console.log('x', x);
+    return x;
 }
 
 /**
@@ -59,5 +75,5 @@ export function confirmPassword(value, values) {
  * @param {any} value
  */
 export function required(value) {
-    return value ? '' : 'validation.error.required';
+    return value ? '' : ' Field is required';
 }

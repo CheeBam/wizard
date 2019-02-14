@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 // eslint-disable-next-line
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 
@@ -15,7 +15,9 @@ import { isEditPage, countPhones } from '../../helpers';
 
 import {
     requiredValidation,
+    isPhoneValidation,
 } from '../../utils';
+
 
 const CustomTextField = props => {
     const { input, label, type, meta: { touched, error }, ...other } = props;
@@ -28,6 +30,7 @@ const CustomTextField = props => {
             label={label}
             type={type}
             error={!!(touched && error)}
+            helperText={touched && error}
             { ...input }
             { ...other }
         />
@@ -48,11 +51,13 @@ const PhoneField = props => {
                 () => <TextField
                     variant="outlined"
                     fullWidth={true}
-                    label={label}
-                    { ...input }
-                    { ...other }
                     margin="normal"
                     type={type}
+                    label={label}
+                    error={!!(touched && error)}
+                    helperText={touched && error}
+                    { ...input }
+                    { ...other }
                 />
             }
         </InputMask>
@@ -61,11 +66,15 @@ const PhoneField = props => {
 
 class Contacts extends Component {
 
+    static propTypes = {
+        isEdit: PropTypes.bool.isRequired,
+    };
+
     componentDidMount() {
-        const { getLanguages, user } = this.props;
+        const { getLanguages, user, isEdit } = this.props;
         getLanguages();
 
-        if(isEditPage) {
+        if(isEdit) {
             this.setState({
                 phonesAmount: countPhones(user),
             });
@@ -97,6 +106,7 @@ class Contacts extends Component {
                     type="text"
                     component={PhoneField}
                     label={`Phone ${i}`}
+                    validate={[isPhoneValidation]}
                 />
             );
         }
@@ -137,16 +147,19 @@ class Contacts extends Component {
                             label="Facebook link"
                         />
                         <Field name="lang"
-                               component={props =>
-                                   <Select
-                                       value={props.input.value}
-                                       onChange={props.input.onChange}
-                                       onBlur={() => props.input.onBlur(props.input.value)}
-                                       options={langs}
-                                       placeholder="Select"
-                                       simpleValue
-                                   />
-                               }
+                            component={({input, value, onChange, meta: { touched, error }, onBlur, options, other}) =>
+                                <Select
+                                    value={value}
+                                    onChange={onChange}
+                                    onBlur={() => onBlur(value)}
+                                    options={langs}
+                                    placeholder="Select"
+                                    simpleValue
+                                    { ...input }
+                                    { ...other }
+                                />
+                            }
+                            validate={[requiredValidation]}
                         />
                     </Grid>
                     <Grid item lg={6} md={6} xs={6}>

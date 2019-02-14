@@ -1,16 +1,7 @@
-export function isEditPage(props) {
-    const {match: {params: { id }}} = props;
+export function isEditPage(match) {
+    const { params: { id } } = match;
     return Boolean(id);
 }
-
-const kek = (user, i) => {
-    console.log(i, user[`phone${++i}`]);
-    if (user[`phone${i}`]) {
-        kek(user, i);
-    } else {
-        return i;
-    }
-};
 
 export function countPhones(user) {
     let i = 1;

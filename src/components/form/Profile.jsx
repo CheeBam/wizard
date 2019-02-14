@@ -116,6 +116,7 @@ class Account extends Component {
                                     component={CustomRadio}
                                     type="radio"
                                     value="male"
+                                    validate={[requiredValidation]}
                                 />{' '}
                                 Male
                             </label>
@@ -125,6 +126,7 @@ class Account extends Component {
                                     component={CustomRadio}
                                     type="radio"
                                     value="female"
+                                    validate={[requiredValidation]}
                                 />{' '}
                                 Female
                             </label>

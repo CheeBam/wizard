@@ -60,6 +60,8 @@ class Wrapper extends Component {
 
             const { match, history } = this.props;
 
+            console.log(match);
+
             if (match.url !== '/user/account') {
                 // history.replace('/user/account');
             }
@@ -128,7 +130,7 @@ class Wrapper extends Component {
                         console.log(e);
                     }
                 };
-                return (<Account onSubmit={method}/>);
+                return (<Account onSubmit={method} />);
             }
             case 'profile': {
                 const method = (data) => {
@@ -140,7 +142,7 @@ class Wrapper extends Component {
                         console.log(e);
                     }
                 };
-                return (<Profile onSubmit={method}/>);
+                return (<Profile onSubmit={method} />);
             }
             case 'contacts': {
                 const method = (data) => {
@@ -152,7 +154,7 @@ class Wrapper extends Component {
                         console.log(e);
                     }
                 };
-                return (<Contacts onSubmit={method}/>);
+                return (<Contacts onSubmit={method} isEdit={this.isEdit()} />);
             }
             case 'capabilities': {
                 const method = async (data) => {
