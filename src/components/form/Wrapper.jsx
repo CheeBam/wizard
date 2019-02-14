@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { Tab, Tabs } from '@material-ui/core';
+import {Tab, Tabs, TextField, AppBar, Toolbar, Typography, Link as MaterialLink} from '@material-ui/core';
 // import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -12,7 +12,16 @@ import PageTitle from './../PageTitle';
 import Account from './Account';
 import Profile from './Profile';
 
-import { saveUserAction, updateUserAction, updateUserSuccessAction, getUserAction } from '../../actions/userActions';
+import {
+    saveUserAction,
+    updateUserAction,
+    updateUserSuccessAction,
+    getUserAction,
+    saveDraftUserAction,
+    getDraftUserAction,
+    fillDraftUserAction,
+    clearUserAction,
+} from '../../actions/userActions';
 import Contacts from "./Contacts";
 import Capabilities from "./Capabilities";
 
@@ -41,19 +50,31 @@ class Wrapper extends Component {
     };
 
     componentDidMount() {
-        const { match: {params: {id}} , getUser} = this.props;
+        const { match: {params: {id}} , getUser, getDraftUser } = this.props;
 
         if (this.isEdit()) {
             if (id) {
                 getUser(id);
             }
         } else {
+
             const { match, history } = this.props;
 
             if (match.url !== '/user/account') {
                 // history.replace('/user/account');
             }
+
+            getDraftUser();
         }
+    }
+
+    componentWillUnmount() {
+        const { saveDraftUser, user } = this.props;
+        const { step } = this.state;
+
+         if (!this.isEdit()) {
+             saveDraftUser({ ...user, step });
+         }
     }
 
     isEdit() {
@@ -61,8 +82,40 @@ class Wrapper extends Component {
         return Boolean(id);
     }
 
+    fillDraftFields = () => {
+        console.log('fill');
+        const { fillDraftUser } = this.props;
+
+        fillDraftUser();
+    };
+
+    renderDraft() {
+        const { draftExists } = this.props;
+
+        if (draftExists) {
+            return (
+                <AppBar position="static">
+                    <Toolbar variant="dense">
+                        <Typography variant="caption" color="inherit">
+                            You have an unsaved user data. Do you want to complete it?
+                        </Typography>
+                        &nbsp;
+                        <MaterialLink
+                            component="button"
+                            variant="caption"
+                            color="inherit"
+                            onClick={this.fillDraftFields}
+                        >
+                            Continue
+                        </MaterialLink>
+                    </Toolbar>
+                </AppBar>
+            )
+        }
+    }
+
     renderPage() {
-        const { match: { params: { id, tab } }, saveUser, updateUser, updateUserState, history, user } = this.props;
+        const { match: { params: { id, tab } }, saveUser, updateUser, updateUserState, clearUserState, history, user } = this.props;
 
         switch (tab) {
             case 'account': {
@@ -102,9 +155,14 @@ class Wrapper extends Component {
                 return (<Contacts onSubmit={method}/>);
             }
             case 'capabilities': {
-                const method = (data) => {
+                const method = async (data) => {
                     try {
-                        this.isEdit() ? updateUser(user.id, data) : saveUser(data);
+                        if (this.isEdit()) {
+                            updateUser(user.id, data)
+                        } else {
+                            await saveUser(data);
+                            clearUserState();
+                        }
                         history.push('/');
                     } catch (e) {
                         console.log(e);
@@ -174,6 +232,7 @@ class Wrapper extends Component {
                         // disabled={!this.isEdit() && step < 4}
                     />
                 </Tabs>
+                { this.renderDraft() }
                 { this.renderPage() }
             </Fragment>
         );
@@ -182,6 +241,8 @@ class Wrapper extends Component {
 
 const mapStateToProps = (state) => ({
     user: state.user.user,
+    draftExists: state.draft.exists,
+    draft: state.draft.user,
 });
 
 const mapDispatchToProps = (dispatch)  => ({
@@ -189,6 +250,10 @@ const mapDispatchToProps = (dispatch)  => ({
     updateUser: (id, values) => dispatch(updateUserAction({ id, values })),
     updateUserState: (data) => dispatch(updateUserSuccessAction(data)),
     getUser: id => dispatch(getUserAction(id)),
+    saveDraftUser: data => dispatch(saveDraftUserAction(data)),
+    getDraftUser: () => dispatch(getDraftUserAction()),
+    fillDraftUser: () => dispatch(fillDraftUserAction()),
+    clearUserState: () => dispatch(clearUserAction()),
 });
 
 export default Wrapper = connect(

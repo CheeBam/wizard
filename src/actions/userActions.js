@@ -16,6 +16,12 @@ export const DESTROY_USER_FAILURE = "DESTROY_USER_FAILURE";
 export const CHANGE_USER_AVATAR = "CHANGE_USER_AVATAR";
 export const CHANGE_USER_ADDRESS = "CHANGE_USER_ADDRESS";
 export const CLEAR_USER = "CLEAR_USER";
+export const SAVE_DRAFT_USER = "SAVE_DRAFT_USER";
+export const FILL_DRAFT_USER = "FILL_DRAFT_USER";
+export const DELETE_DRAFT_USER = "DELETE_DRAFT_USER";
+export const GET_DRAFT_USER_REQUEST = "GET_DRAFT_USER_REQUEST";
+export const GET_DRAFT_USER_SUCCESS= "GET_DRAFT_USER_SUCCESS";
+export const GET_DRAFT_USER_FAILURE = "GET_DRAFT_USER_FAILURE";
 
 export function saveUserAction(payload) {
     return { type: SAVE_USER_REQUEST, payload };
@@ -49,5 +55,20 @@ export function updateUserSuccessAction(payload) {
     return { type: UPDATE_USER_SUCCESS, payload };
 }
 
+export function saveDraftUserAction(payload) {
+    return { type: SAVE_DRAFT_USER, payload };
+}
+
+export function getDraftUserAction(payload) {
+    return { type: GET_DRAFT_USER_REQUEST, payload };
+}
+
+export function fillDraftUserAction() {
+    return { type: FILL_DRAFT_USER };
+}
+
+export function deleteDraftUserAction() {
+    return { type: DELETE_DRAFT_USER };
+}
 
 

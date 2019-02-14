@@ -11,9 +11,7 @@ const update = async (data) => {
 };
 
 const find = async (id) => {
-    const x = await Database.getById('users', id);
-    console.log(x);
-    return x;
+    return await Database.getById('users', id);
 };
 
 const findAll = async (meta) => {
@@ -24,10 +22,25 @@ const destroy = async (id) => {
     return await Database.destroy('users', id);
 };
 
+const saveDraft = async (data) => {
+    return await Database.updateOrCreate('draft', 1, data);
+};
+
+const getDraft = async () => {
+    return await Database.getById('draft', 1);
+};
+
+const destroyDraft = async () => {
+    return await Database.destroy('draft', 1);
+};
+
 export default {
     find,
     findAll,
     save,
     update,
     destroy,
+    saveDraft,
+    getDraft,
+    destroyDraft,
 };

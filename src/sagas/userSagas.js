@@ -5,7 +5,7 @@
 
 import api from '../api/userApi';
 
-import { all, call, put, takeLatest } from 'redux-saga/effects';
+import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 
 import {
     SAVE_USER_REQUEST, SAVE_USER_SUCCESS, SAVE_USER_FAILURE,
@@ -13,6 +13,8 @@ import {
     GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE,
     GET_ALL_REQUEST, GET_ALL_SUCCESS, GET_ALL_FAILURE,
     DESTROY_USER_REQUEST, DESTROY_USER_SUCCESS, DESTROY_USER_FAILURE,
+    GET_DRAFT_USER_REQUEST, GET_DRAFT_USER_SUCCESS, GET_DRAFT_USER_FAILURE,
+    SAVE_DRAFT_USER, DELETE_DRAFT_USER, FILL_DRAFT_USER,
 } from '../actions/userActions';
 
 /**
@@ -25,6 +27,10 @@ export function* saveUserSaga(data) {
         yield put({
             type: SAVE_USER_SUCCESS,
             payload: response,
+        });
+
+        yield put({
+            type: DELETE_DRAFT_USER,
         });
 
     } catch (err) {
@@ -121,6 +127,74 @@ export function* destroyUserSaga(data) {
     }
 }
 
+/**
+ * save draft user
+ */
+export function* saveDraftUserSaga(data) {
+    try {
+        yield call(api.saveDraft, data.payload);
+
+        // yield put({
+        //     type: DESTROY_USER_SUCCESS,
+        //     payload: response,
+        // });
+
+    } catch (err) {
+        console.error(err);
+        // yield put({
+        //     type: DESTROY_USER_FAILURE,
+        //     payload: err,
+        // });
+    }
+}
+
+/**
+ * get draft user
+ */
+export function* getDraftUserSaga() {
+    try {
+        const response = yield call(api.getDraft);
+
+        yield put({
+            type: GET_DRAFT_USER_SUCCESS,
+            payload: response,
+        });
+
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: GET_DRAFT_USER_FAILURE,
+            payload: err,
+        });
+    }
+}
+
+/**
+ * get draft user
+ */
+export function* fillDraftUserSaga() {
+    try {
+        const draft = yield select(state => state.draft.user);
+
+        yield put({
+            type: GET_USER_SUCCESS,
+            payload: { ...draft, step: undefined },
+        });
+
+        yield call(api.destroyDraft);
+
+        yield put({
+            type: DELETE_DRAFT_USER,
+        });
+
+    } catch (err) {
+        yield put({
+            type: GET_USER_FAILURE,
+            payload: err,
+        });
+    }
+}
+
 
 /**
  * Task Sagas
@@ -132,6 +206,9 @@ export default function* user() {
         takeLatest(GET_USER_REQUEST, getUserSaga),
         takeLatest(GET_ALL_REQUEST, getAllUsersSaga),
         takeLatest(DESTROY_USER_REQUEST, destroyUserSaga),
+        takeLatest(SAVE_DRAFT_USER, saveDraftUserSaga),
+        takeLatest(GET_DRAFT_USER_REQUEST, getDraftUserSaga),
+        takeLatest(FILL_DRAFT_USER, fillDraftUserSaga),
     ]);
 }
 

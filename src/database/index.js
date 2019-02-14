@@ -54,12 +54,12 @@ export default class Database {
                             objectStore.createIndex('hobbies_id_unique', 'id', {unique: true});
                         }
 
-                        if (!upgradeDB.objectStoreNames.contains("unsaved")) {
-                            const objectStore = upgradeDB.createObjectStore("unsaved", {
+                        if (!upgradeDB.objectStoreNames.contains("draft")) {
+                            const objectStore = upgradeDB.createObjectStore("draft", {
                                 keyPath: 'id',
                                 autoIncrement: true
                             });
-                            objectStore.createIndex('unsaved_id_unique', 'id', {unique: true});
+                            objectStore.createIndex('draft_id_unique', 'id', {unique: true});
                         }
 
                         console.log('The database is onupgradeneeded');
@@ -157,7 +157,7 @@ export default class Database {
                     await Database.connect();
                 }
 
-                console.log('DB fetch', id);
+                console.log('DB fetch', table, id);
 
                 const store = Database.instance.transaction([table], 'readonly').objectStore(table);
                 const index = store.index(`${table}_id_unique`);
@@ -188,13 +188,11 @@ export default class Database {
                     await Database.connect();
                 }
 
-                console.log('DB save', data);
-
                 const local = DateTime.local().toISO();
                 const saveData = { ...data, updatedAt: local, createdAt: local };
                 delete saveData['id'];
 
-                console.log(saveData);
+                console.log('DB save', saveData);
 
                 const request = Database.instance.transaction([table], 'readwrite')
                     .objectStore(table)
@@ -290,6 +288,61 @@ export default class Database {
 
             } catch (e) {
                 console.error('DB delete error', e);
+            }
+        });
+    };
+
+    /**
+     * Update or create field by id
+     *
+     * @param table table name
+     * @param id needed id
+     * @param data updated fields
+     * @returns Object field
+     */
+    static updateOrCreate = async (table, id, data) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                if (!Database.instance) {
+                    await Database.connect();
+                }
+
+                console.log('DB update', id, data);
+
+                const store = Database.instance.transaction([table], 'readwrite').objectStore(table);
+                const index = store.index(`${table}_id_unique`);
+                const key = IDBKeyRange.only(+id);
+                const request = index.openCursor(key);
+
+                request.onsuccess = (e) => {
+                    const cursor = e.target.result;
+
+                    if (cursor) {
+                        const item = {...cursor.value, ...data, updatedAt: DateTime.local().toISO(), id };
+                        cursor.update(item);
+                        console.log('Update! or create success');
+                        resolve(item);
+                    } else {
+                        const local = DateTime.local().toISO();
+                        let item = { ...data, id, updatedAt: local, createdAt: local };
+                        const upd = store.put(item);
+
+                        upd.onsuccess = (e) => {
+                            console.log('Update or create! success');
+                            resolve({ ...item, id: e.target.result });
+                        };
+
+                        upd.onerror = function (e) {
+                            reject('Update or create!  error', e);
+                        };
+                    }
+                };
+
+                request.onerror = (e) => {
+                    reject('Update or create', e);
+                };
+            } catch (e) {
+                console.error('DB update error', e);
             }
         });
     };

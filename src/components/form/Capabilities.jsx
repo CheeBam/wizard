@@ -135,6 +135,10 @@ Contacts = reduxForm({
     form: 'capabilities',
     destroyOnUnmount: false,
     enableReinitialize : true,
+    onChange: (values, dispatch, props, previousValues) => {
+        console.log(values, props, previousValues);
+        props.submit();
+    },
 })(Contacts);
 
 export default connect(

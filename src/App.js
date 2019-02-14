@@ -21,6 +21,7 @@ class App extends Component {
     constructor() {
         super();
 
+
         let temp = window.location.hash.split('/')[1];
 
         if (temp === '') {

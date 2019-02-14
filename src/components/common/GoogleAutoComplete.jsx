@@ -8,17 +8,25 @@ import PlacesAutocomplete from 'react-places-autocomplete';
 import {reduxForm} from "redux-form";
 import {connect} from "react-redux";
 
+import { scriptExists } from '../../helpers';
+
 class GoogleAutocomplete extends React.Component {
 
     componentDidMount() {
-        console.log(process.env.REACT_APP_GOOGLE_API_KEY);
+        const url = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`;
 
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`;
-        script.async = 1;
-        script.defer = 1;
-        document.body.appendChild(script);
-        script.onload = () => {
+        if (!scriptExists(url)) {
+            const script = document.createElement('script');
+            script.src = url;
+            script.async = 1;
+            script.defer = 1;
+            document.body.appendChild(script);
+            script.onload = () => {
+                this.setState({
+                    apiLoaded: true,
+                })
+            }
+        } else {
             this.setState({
                 apiLoaded: true,
             })
