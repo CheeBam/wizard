@@ -4,7 +4,7 @@ import React, {Component, Fragment} from 'react';
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import {Grid, TextField, Button, Radio, Avatar, withStyles} from '@material-ui/core';
+import {Grid, TextField, Button, Radio, Avatar, withStyles, Link as MaterialLink} from '@material-ui/core';
 
 import { getUserAction, clearUserAction } from '../actions/userActions';
 
@@ -35,6 +35,14 @@ class Info extends Component {
         clearUser();
     }
 
+    toEdit(part) {
+        return () => {
+            const { history, match: {params: {id}} } = this.props;
+
+            history.push(`/user/${part}/${id}`);
+        };
+    }
+
     render() {
         const { user, classes } = this.props;
 
@@ -60,6 +68,14 @@ class Info extends Component {
                         >
                             <Grid item lg={4} md={6} xs={6}>
                                 <p>Account</p>
+                                <MaterialLink
+                                    component="button"
+                                    variant="caption"
+                                    color="inherit"
+                                    onClick={this.toEdit('account')}
+                                >
+                                    edit
+                                </MaterialLink>
                             </Grid>
                             <Grid item lg={4} md={6} xs={6}>
                                 <p>Username:</p>
@@ -77,6 +93,14 @@ class Info extends Component {
                         >
                             <Grid item lg={4} md={6} xs={6}>
                                 <p>Personal</p>
+                                <MaterialLink
+                                    component="button"
+                                    variant="caption"
+                                    color="inherit"
+                                    onClick={this.toEdit('personal')}
+                                >
+                                    edit
+                                </MaterialLink>
                             </Grid>
                             <Grid item lg={4} md={6} xs={6}>
                                 <p>First name:</p>
@@ -99,7 +123,15 @@ class Info extends Component {
                             spacing={8}
                         >
                             <Grid item lg={4} md={6} xs={6}>
-                                <p>Personal</p>
+                                <p>Contacts</p>
+                                <MaterialLink
+                                    component="button"
+                                    variant="caption"
+                                    color="inherit"
+                                    onClick={this.toEdit('contacts')}
+                                >
+                                    edit
+                                </MaterialLink>
                             </Grid>
                             <Grid item lg={4} md={6} xs={6}>
                                 <p>{ user.company ? 'Company:' : '' }</p>
@@ -127,6 +159,14 @@ class Info extends Component {
                         >
                             <Grid item lg={4} md={6} xs={6}>
                                 <p>Capabilities</p>
+                                <MaterialLink
+                                    component="button"
+                                    variant="caption"
+                                    color="inherit"
+                                    onClick={this.toEdit('capabilities')}
+                                >
+                                    edit
+                                </MaterialLink>
                             </Grid>
                             <Grid item lg={4} md={6} xs={6}>
                                 <p>{ user.skills.length > 0 ? 'Skills:' : '' }</p>
