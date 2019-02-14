@@ -27,6 +27,10 @@ const styles = {
             fontSize: 14,
         }
     },
+    avatar: {
+        cursor: 'pointer',
+        border: '2px solid blue',
+    }
 
 };
 
@@ -42,6 +46,13 @@ class List extends Component {
             const { destroy } = this.props;
             destroy(id);
         };
+    };
+
+    redirectTo = (id) => {
+        return () => {
+            const { history } = this.props;
+            history.push(`/info/${id}`);
+        }
     };
 
     renderTableBody() {
@@ -69,7 +80,7 @@ class List extends Component {
                                 display: 'flex',
                                 alignItems: 'center',
                             }}>
-                                <Avatar alt="Remy Sharp" src={row.avatar}/>
+                                <Avatar alt="Remy Sharp" src={row.avatar} classes={{ root: classes.avatar }} onClick={this.redirectTo(row.id)}/>
                                 <div style={{
                                     display: 'flex',
                                     flexDirection: 'column',
@@ -102,7 +113,7 @@ class List extends Component {
                             {row.company}
                         </TableCell>
                         <TableCell>
-                            {row.email}
+                            {row.phone1 || row.email}
                         </TableCell>
                         <TableCell>
                             { row.updatedAt ? DateTime.fromISO(row.updatedAt).toRelativeCalendar() : ''}
@@ -144,7 +155,7 @@ class List extends Component {
                             <TableCell>№</TableCell>
                             <TableCell align={"center"}>Name</TableCell>
                             <TableCell>Company</TableCell>
-                            <TableCell>Email</TableCell>
+                            <TableCell>Contacts</TableCell>
                             <TableCell>Last update</TableCell>
                             <TableCell> </TableCell>
                             <TableCell> </TableCell>
