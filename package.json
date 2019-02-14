@@ -2,6 +2,7 @@
   "name": "wizard",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://cheebam.github.io/wizard/",
   "dependencies": {
     "@material-ui/core": "^3.9.2",
     "form": "^0.2.4",
@@ -28,7 +29,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
