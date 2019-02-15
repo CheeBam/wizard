@@ -1,15 +1,15 @@
 {
-  "main.js": "/wizard/static/js/main.4bc4e3d3.chunk.js",
-  "main.js.map": "/wizard/static/js/main.4bc4e3d3.chunk.js.map",
-  "static/css/1.47c862bc.chunk.css": "/wizard/static/css/1.47c862bc.chunk.css",
-  "static/js/1.a0d0828c.chunk.js": "/wizard/static/js/1.a0d0828c.chunk.js",
-  "static/js/1.a0d0828c.chunk.js.map": "/wizard/static/js/1.a0d0828c.chunk.js.map",
+  "main.js": "/wizard/static/js/main.1e11a791.chunk.js",
+  "main.js.map": "/wizard/static/js/main.1e11a791.chunk.js.map",
+  "static/css/1.931c17a7.chunk.css": "/wizard/static/css/1.931c17a7.chunk.css",
+  "static/js/1.de317e3f.chunk.js": "/wizard/static/js/1.de317e3f.chunk.js",
+  "static/js/1.de317e3f.chunk.js.map": "/wizard/static/js/1.de317e3f.chunk.js.map",
   "runtime~main.js": "/wizard/static/js/runtime~main.ccb37e3f.js",
   "runtime~main.js.map": "/wizard/static/js/runtime~main.ccb37e3f.js.map",
   "static/media/list_logo.svg": "/wizard/static/media/list_logo.11bafda4.svg",
   "static/media/add.svg": "/wizard/static/media/add.7e9d623d.svg",
-  "static/css/1.47c862bc.chunk.css.map": "/wizard/static/css/1.47c862bc.chunk.css.map",
+  "static/css/1.931c17a7.chunk.css.map": "/wizard/static/css/1.931c17a7.chunk.css.map",
   "index.html": "/wizard/index.html",
-  "precache-manifest.a5a9d78e1ca0d13df6b8f5a34640f5fe.js": "/wizard/precache-manifest.a5a9d78e1ca0d13df6b8f5a34640f5fe.js",
+  "precache-manifest.10283e38161e147ce235e46721ead9e6.js": "/wizard/precache-manifest.10283e38161e147ce235e46721ead9e6.js",
   "service-worker.js": "/wizard/service-worker.js"
 }
