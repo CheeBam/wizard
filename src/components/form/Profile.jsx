@@ -1,65 +1,22 @@
 import React, { Component } from 'react';
 // eslint-disable-next-line
-import PropTypes, {instanceOf} from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
-import { DateTime } from 'luxon';
 
 import "react-datepicker/dist/react-datepicker.css";
 
-import DatePicker from 'react-datepicker';
-import { Grid, TextField, Button, Radio } from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 import { Field, reduxForm } from 'redux-form';
 
 // import { withStyles } from '@material-ui/core/styles';
 
-import GoogleAutoComplete from './../common/GoogleAutoComplete';
+import DatePicker from '../common/form/controls/DatePicker';
+import RadioButton from '../common/form/controls/RadioButton';
+import TextInput from '../common/form/controls/TextInput';
+import GoogleAutoComplete from '../common/form/controls/GoogleAutoComplete';
 
 import { requiredValidation } from '../../utils';
-
-const CustomTextField = props => {
-    const { input, label, type, meta: { touched, error }, ...other } = props;
-
-    return (
-        <TextField
-            variant="outlined"
-            fullWidth={true}
-            margin="normal"
-            label={label}
-            type={type}
-            error={!!(touched && error)}
-            { ...input }
-            { ...other }
-        />
-    )
-};
-
-const ReactDatePicker = ({input, placeholder, defaultValue, meta: {touched, error} }) => {
-    return (
-    <div>
-        <DatePicker {...input} onChange={(value) => {
-            input.onChange(DateTime.fromJSDate(value).toFormat('dd-MM-yy'));
-        }} dateForm="dd-MM-yy" />
-        {touched && error && <span>{error}</span>}
-    </div>
-    );
-};
-
-
-const CustomRadio = props => {
-    const { input, label, type, ...other } = props;
-
-    return (
-        <Radio
-            color="primary"
-            margin="normal"
-            label={label}
-            type={type}
-            { ...input }
-            { ...other }
-        />
-    )
-};
 
 class Account extends Component {
 
@@ -77,21 +34,21 @@ class Account extends Component {
                         <Field
                             name="firstName"
                             type="text"
-                            component={CustomTextField}
+                            component={TextInput}
                             label="FirstName"
                             validate={[requiredValidation]}
                         />
                         <Field
                             name="lastName"
                             type="text"
-                            component={CustomTextField}
+                            component={TextInput}
                             label="LastName"
                             validate={[requiredValidation]}
                         />
                         <Field
                             name="birthday"
                             type="text"
-                            component={ReactDatePicker}
+                            component={DatePicker}
                             label="Birthday"
                         />
                     </Grid>
@@ -99,7 +56,7 @@ class Account extends Component {
                         <Field
                             name="email"
                             type="email"
-                            component={CustomTextField}
+                            component={TextInput}
                             label="Email"
                             validate={[requiredValidation]}
                         />
@@ -113,7 +70,7 @@ class Account extends Component {
                             <label>
                                 <Field
                                     name="sex"
-                                    component={CustomRadio}
+                                    component={RadioButton}
                                     type="radio"
                                     value="male"
                                     validate={[requiredValidation]}
@@ -123,7 +80,7 @@ class Account extends Component {
                             <label>
                                 <Field
                                     name="sex"
-                                    component={CustomRadio}
+                                    component={RadioButton}
                                     type="radio"
                                     value="female"
                                     validate={[requiredValidation]}
@@ -158,7 +115,7 @@ const mapDispatchToProps = (dispatch)  => ({
 });
 
 Account = reduxForm({
-    form: 'profile',
+    form: 'wizard',
     destroyOnUnmount: false,
     enableReinitialize : true,
 })(Account);

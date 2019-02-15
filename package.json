@@ -5,6 +5,7 @@
   "homepage": "https://cheebam.github.io/wizard/",
   "dependencies": {
     "@material-ui/core": "^3.9.2",
+    "@material-ui/icons": "^3.0.2",
     "form": "^0.2.4",
     "google-maps": "^3.3.0",
     "history": "^4.7.2",

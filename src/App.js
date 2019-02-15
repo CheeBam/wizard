@@ -8,6 +8,11 @@ import Wrapper from './components/form/Wrapper';
 import Info from './components/Info';
 import Header from './components/Header';
 
+import Account from './components/form/Account';
+import Profile from './components/form/Profile';
+import Contacts from './components/form/Contacts';
+import Capabilities from './components/form/Capabilities';
+
 const styles = {
     container: {
         maxWidth: 970,
@@ -52,7 +57,7 @@ class App extends Component {
                 <div className={classes.container}>
                     <Switch>
                         <Route path="/info/:id" component={Info} />
-                        <Route path="/user/:tab?/:id?" component={Wrapper} />
+                        <Route path="/user/:tab/:id?" component={Wrapper} />
                         <Route path="/" component={List} />
                     </Switch>
                 </div>

@@ -29,6 +29,7 @@ export const INITIAL_STATE = Immutable({
         github: null,
         fax: null,
         company: null,
+        phones: [{}, {}],
         phone1: null,
         phone2: null,
         phone3: null,
@@ -68,10 +69,6 @@ export default function userReducer(state = INITIAL_STATE, action) {
         case SAVE_USER_SUCCESS:
         case UPDATE_USER_SUCCESS:
         case GET_USER_SUCCESS:
-
-            console.log(action.payload);
-            console.log(state.user);
-
             return state.merge({
                 fetching: false,
                 error: false,

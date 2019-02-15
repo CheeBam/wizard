@@ -175,6 +175,42 @@ export default class Database {
     };
 
     /**
+     * Get data by id
+     *
+     * @param table table name
+     * @param id needed id
+     * @returns Object field
+     */
+    static getByKey = async (table, key, value) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                if (!Database.instance) {
+                    await Database.connect();
+                }
+
+                console.log('DB fetch by key', table, key);
+
+                const store = Database.instance.transaction([table], 'readonly').objectStore(table);
+                const index = store.index(`${table}_id_unique`);
+                const request = index.get(key);
+
+                request.onsuccess = (e) => {
+                    console.log('Fetch by key success');
+                    resolve(e.target.result);
+                };
+
+                request.onerror = (e) => {
+                    console.log('Fetch by key error');
+                    reject(e);
+                }
+
+            } catch (e) {
+                console.error('DB fetch by key error', e);
+            }
+        });
+    };
+
+    /**
      * Save data
      *
      * @param table table name

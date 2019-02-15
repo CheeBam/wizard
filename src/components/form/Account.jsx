@@ -3,10 +3,9 @@ import React, { Component } from 'react';
 // eslint-disable-next-line
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
-import { Grid, TextField, Button, Avatar } from '@material-ui/core';
-import {change, Field, reduxForm} from 'redux-form';
+import { Grid, Button, Avatar } from '@material-ui/core';
+import { Field, reduxForm } from 'redux-form';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -14,7 +13,11 @@ import {
     requiredValidation,
     confirmPasswordValidation,
 } from '../../utils';
+
 import { changeAvatarAction } from "../../actions/userActions";
+
+import PasswordInput from '../common/form/controls/PasswordInput';
+import TextInput from '../common/form/controls/TextInput';
 
 const styles = {
     avatar: {
@@ -28,42 +31,9 @@ const styles = {
     },
 };
 
-const renderField = ({ input, label, type, meta: { touched, error, warning } }) => (
-    <div>
-        <label>{label}</label>
-        <div>
-            <input {...input} placeholder={label} type={type} />
-            { touched && ((error && <span>{error}</span>) || (warning && <span>{warning}</span>))}
-        </div>
-    </div>
-);
-
-const CustomTextField = props => {
-    const { input, label, type, meta: { touched, error }, ...other } = props;
-
-    return (
-        <TextField
-            variant="outlined"
-            fullWidth={true}
-            margin="normal"
-            label={label}
-            type={type}
-            error={!!(touched && error)}
-            helperText={touched && error}
-            { ...input }
-            { ...other }
-        />
-    )
-};
-
-function submit(values) {
-    console.log('cva', values);
-}
-
 class Account extends Component {
-
     encodeImageFileAsURL = e => {
-        const { changeAvatar, dispatch } = this.props;
+        const { changeAvatar } = this.props;
         const file = e.target.files[0];
         const reader = new FileReader();
 
@@ -92,26 +62,26 @@ class Account extends Component {
                         <Field
                             name="avatar"
                             type="hidden"
-                            component={CustomTextField}
+                            component={TextInput}
                         />
                         <Field
                             name="username"
                             type="text"
-                            component={CustomTextField}
+                            component={TextInput}
                             label="Username"
                             validate={[requiredValidation]}
                         />
                         <Field
                             name="password"
                             type="password"
-                            component={CustomTextField}
+                            component={PasswordInput}
                             label="Password"
                             validate={[requiredValidation]}
                         />
                         <Field
                             name="confirm"
                             type="password"
-                            component={CustomTextField}
+                            component={PasswordInput}
                             label="Repeat Password"
                             validate={[requiredValidation, confirmPasswordValidation]}
                         />
@@ -137,7 +107,7 @@ const mapDispatchToProps = (dispatch)  => ({
 });
 
 const connectedAccount = reduxForm({
-    form: 'account',
+    form: 'wizard',
     destroyOnUnmount: false,
     enableReinitialize : true,
 })(Account);

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 // eslint-disable-next-line
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Select from 'react-select';
+
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -12,8 +12,9 @@ import { Field, reduxForm } from 'redux-form';
 
 import { getHobbiesAction, getSkillsAction } from '../../actions/staticActions';
 
+import SelectInput from '../common/form/controls/Select';
 
-const CustomTextField = props => {
+const MultiTextField = props => {
     const { input, label, type, meta: { touched, error }, ...other } = props;
 
     return (
@@ -64,9 +65,12 @@ class Contacts extends Component {
         getHobbies();
     }
 
+    qwe = (vals) => {
+        console.log('qwe', vals);
+    };
+
     render() {
         const { handleSubmit, skills } = this.props;
-        const sl = [...skills];
 
         return (
             <form onSubmit={handleSubmit}>
@@ -76,24 +80,18 @@ class Contacts extends Component {
                     justify="center"
                 >
                     <Grid item lg={6} md={6} xs={6}>
-                        <Field name="skills"
-                               component={props =>
-                                   <Select
-                                       value={props.input.value}
-                                       onChange={props.input.onChange}
-                                       onBlur={() => props.input.onBlur(props.input.value)}
-                                       options={sl}
-                                       isMulti
-                                       placeholder="Select"
-                                       simpleValue
-                                   />
-                               }
+                        <Field
+                            name="skills"
+                            label="Skills"
+                            component={SelectInput}
+                            options={[...skills]}
+                            multiple
                         />
                         <Field
                             rows={4}
                             name="additional"
                             type="text"
-                            component={CustomTextField}
+                            component={MultiTextField}
                             label="Additional information-"
                         />
 
@@ -132,7 +130,7 @@ const mapDispatchToProps = (dispatch)  => ({
 });
 
 Contacts = reduxForm({
-    form: 'capabilities',
+    form: 'wizard',
     destroyOnUnmount: false,
     enableReinitialize : true,
     // onChange: (values, dispatch, props, previousValues) => {

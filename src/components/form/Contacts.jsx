@@ -1,68 +1,26 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 // eslint-disable-next-line
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 
 import { Grid, TextField, Button } from '@material-ui/core';
-import { Field, reduxForm } from 'redux-form';
-import InputMask from 'react-input-mask';
+import { Field, FieldArray, reduxForm } from 'redux-form';
+
 
 // import { withStyles } from '@material-ui/core/styles';
 
 import { getLanguagesAction } from "../../actions/staticActions";
-import { isEditPage, countPhones } from '../../helpers';
+import { countPhones } from '../../helpers';
 
 import {
     requiredValidation,
     isPhoneValidation,
 } from '../../utils';
 
-
-const CustomTextField = props => {
-    const { input, label, type, meta: { touched, error }, ...other } = props;
-
-    return (
-        <TextField
-            variant="outlined"
-            fullWidth={true}
-            margin="normal"
-            label={label}
-            type={type}
-            error={!!(touched && error)}
-            helperText={touched && error}
-            { ...input }
-            { ...other }
-        />
-    )
-};
-
-const PhoneField = props => {
-
-    const { input, label, type, meta: { touched, error }, ...other } = props;
-
-    return (
-        <InputMask
-            mask="+7(999) 999-99-99"
-            { ...input }
-            { ...other }
-        >
-            {
-                () => <TextField
-                    variant="outlined"
-                    fullWidth={true}
-                    margin="normal"
-                    type={type}
-                    label={label}
-                    error={!!(touched && error)}
-                    helperText={touched && error}
-                    { ...input }
-                    { ...other }
-                />
-            }
-        </InputMask>
-    )
-};
+import TextInput from '../common/form/controls/TextInput';
+import PhoneInput from '../common/form/controls/PhoneInput';
+import SelectInput from '../common/form/controls/Select';
 
 class Contacts extends Component {
 
@@ -71,53 +29,37 @@ class Contacts extends Component {
     };
 
     componentDidMount() {
-        const { getLanguages, user, isEdit } = this.props;
+        const { getLanguages } = this.props;
         getLanguages();
-
-        if(isEdit) {
-            this.setState({
-                phonesAmount: countPhones(user),
-            });
-        }
     };
 
-    state = {
-        phonesAmount: 2,
-    };
-
-    changePhoneAmount(add) {
-        return () => {
-            const { phonesAmount } = this.state;
-            this.setState({
-                phonesAmount: add ? phonesAmount + 1 : phonesAmount - 1,
-            });
-        }
-    }
-
-    renderPhones() {
-        const { phonesAmount } = this.state;
-        const phones = [];
-
-        for (let i = 1; i <= phonesAmount; i++) {
-            phones.push(
-                <Field
-                    key={i}
-                    name={`phone${i}`}
-                    type="text"
-                    component={PhoneField}
-                    label={`Phone ${i}`}
-                    validate={[isPhoneValidation]}
-                />
-            );
-        }
-
-        return phones;
-    }
+    renderPhones = ({ fields, meta: { error } }) => (
+        <div>
+            <Button style={{visibility: fields.length > 2 ? 'hidden' : ''}} onClick={() => fields.push()}
+                    variant="contained" color="secondary" type="button">
+                +
+            </Button>
+            {fields.map((hobby, index) => (
+                <div key={index}>
+                    <Button style={{visibility: fields.length < 2 ? 'hidden' : ''}} onClick={() => fields.remove(index)}
+                            variant="contained" color="secondary" type="button">
+                        -
+                    </Button>
+                    <Field
+                        name={hobby}
+                        type="text"
+                        component={PhoneInput}
+                        label={`Hobby #${index + 1}`}
+                        // validate={[isPhoneValidation]}
+                    />
+                </div>
+            ))}
+            {error && <p className="error">{error}</p>}
+        </div>
+    );
 
     render() {
         const { handleSubmit, languages } = this.props;
-        const { phonesAmount } = this.state;
-        const langs = [ ...languages ];
 
         return (
             <form onSubmit={handleSubmit}>
@@ -130,35 +72,28 @@ class Contacts extends Component {
                         <Field
                             name="company"
                             type="text"
-                            component={CustomTextField}
+                            component={TextInput}
                             label="Company"
                             validate={[requiredValidation]}
                         />
                         <Field
                             name="github"
                             type="text"
-                            component={CustomTextField}
+                            component={TextInput}
                             label="Github link"
                         />
                         <Field
                             name="facebook"
                             type="text"
-                            component={CustomTextField}
+                            component={TextInput}
                             label="Facebook link"
                         />
-                        <Field name="lang"
-                            component={({input, value, onChange, meta: { touched, error }, onBlur, options, other}) =>
-                                <Select
-                                    value={value}
-                                    onChange={onChange}
-                                    onBlur={() => onBlur(value)}
-                                    options={langs}
-                                    placeholder="Select"
-                                    simpleValue
-                                    { ...input }
-                                    { ...other }
-                                />
-                            }
+                        <Field
+                            name="lang"
+                            label="Skills"
+                            multiple={false}
+                            options={[...languages]}
+                            component={SelectInput}
                             validate={[requiredValidation]}
                         />
                     </Grid>
@@ -166,22 +101,14 @@ class Contacts extends Component {
                         <Field
                             name="fax"
                             type="text"
-                            component={PhoneField}
+                            component={TextInput}
                             label="Fax"
                         />
-                        { this.renderPhones() }
-                        <div>
-                            <Button style={{ visibility: phonesAmount > 2 ? 'hidden' : '' }} onClick={this.changePhoneAmount(true)} variant="contained" color="secondary" type="button">
-                                +
-                            </Button>
-                            <Button style={{ visibility: phonesAmount < 2 ? 'hidden' : '' }} onClick={this.changePhoneAmount(false)} variant="contained" color="secondary" type="button">
-                                -
-                            </Button>
+                        <FieldArray name="phones" component={this.renderPhones} />
 
-                            <Button variant="contained" color="primary" type="submit">
-                                Forward
-                            </Button>
-                        </div>
+                        <Button variant="contained" color="primary" type="submit">
+                            Forward
+                        </Button>
                     </Grid>
                 </Grid>
             </form>
@@ -200,7 +127,7 @@ const mapDispatchToProps = (dispatch)  => ({
 });
 
 Contacts = reduxForm({
-    form: 'contacts',
+    form: 'wizard',
     destroyOnUnmount: false,
     enableReinitialize : true,
 })(Contacts);

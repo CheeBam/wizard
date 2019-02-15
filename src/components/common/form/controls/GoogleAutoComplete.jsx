@@ -8,7 +8,7 @@ import PlacesAutocomplete from 'react-places-autocomplete';
 import {reduxForm} from "redux-form";
 import {connect} from "react-redux";
 
-import { scriptExists } from '../../helpers';
+import { scriptExists } from '../../../../helpers';
 
 class GoogleAutocomplete extends React.Component {
 
