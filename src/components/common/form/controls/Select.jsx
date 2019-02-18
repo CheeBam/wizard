@@ -1,19 +1,26 @@
-import React from "react";
+import React, { Fragment } from 'react';
 import Select from 'react-select';
 
+import { InputLabel, FormHelperText } from '@material-ui/core'
+
 const SelectInput = props => {
-    const { input, options, multiple, meta: { touched, error } } = props;
+    const { input, options, multiple, meta: { error }, label } = props;
 
     return (
-        <Select
-            options={options}
-            isMulti={multiple}
-            placeholder="Select"
-            simpleValue
-            error={!!(touched && error)}
-            helperText={touched && error}
-            onChange={input.onChange}
-        />
+        <Fragment>
+            <InputLabel>{ label }</InputLabel>
+            <Select
+                options={options}
+                isMulti={multiple}
+                placeholder='Select'
+                simpleValue
+                error={!!(error)}
+                helperText={error}
+                onChange={input.onChange}
+                value={input.value}
+            />
+            <FormHelperText>{ error }</FormHelperText>
+        </Fragment>
     )
 };
 

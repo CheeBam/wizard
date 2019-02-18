@@ -49,12 +49,13 @@ class GoogleAutocomplete extends React.Component {
     };
 
     handleChange = address => {
-        this.setState({ address });
+        const { input } = this.props;
+        input.onChange(address)
     };
 
     handleSelect = address => {
-        this.props.dispatch(change('profile', 'address', address)); //TODO: REFACTOR
-        this.setState({ address });
+        const { input } = this.props;
+        input.onChange(address)
     };
 
     render() {
@@ -63,7 +64,7 @@ class GoogleAutocomplete extends React.Component {
         if (apiLoaded) {
             return (
                 <PlacesAutocomplete
-                    value={this.state.address}
+                    value={input.value}
                     onChange={this.handleChange}
                     onSelect={this.handleSelect}
                     debounce={700}

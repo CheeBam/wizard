@@ -20,8 +20,7 @@ const PhoneField = props => {
                     label={label}
                     error={!!(touched && error)}
                     helperText={touched && error}
-                    { ...input }
-                    { ...other }
+                    onChange={input.onChange}
                 />
             }
         </InputMask>
