@@ -17,9 +17,9 @@ export const INITIAL_STATE = Immutable({
     user: {
         id: null,
         avatar: DEFAULT_AVATAR,
-        username: undefined,
-        password: undefined,
-        firstName: undefined,
+        username: null,
+        password: null,
+        firstName: null,
         lastName: null,
         email: null,
         address: null,
@@ -29,10 +29,7 @@ export const INITIAL_STATE = Immutable({
         github: null,
         fax: null,
         company: null,
-        phones: [{}, {}],
-        phone1: null,
-        phone2: null,
-        phone3: null,
+        phones: ['', ''],
         lang: {},
         skills: [],
         hobbies: [],
@@ -43,6 +40,8 @@ export const INITIAL_STATE = Immutable({
         data: [],
     }
 });
+
+Immutable.without(INITIAL_STATE, 'phones');
 
 export default function userReducer(state = INITIAL_STATE, action) {
     switch (action.type) {
@@ -98,7 +97,7 @@ export default function userReducer(state = INITIAL_STATE, action) {
                 list: {
                     data: state.list.data.filter(el => el.id !== action.payload),
                 },
-            }, { deep: true });
+            });
 
         case CHANGE_USER_AVATAR:
             return state.merge({

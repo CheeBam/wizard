@@ -14,7 +14,9 @@ import {
     GET_ALL_REQUEST, GET_ALL_SUCCESS, GET_ALL_FAILURE,
     DESTROY_USER_REQUEST, DESTROY_USER_SUCCESS, DESTROY_USER_FAILURE,
     GET_DRAFT_USER_REQUEST, GET_DRAFT_USER_SUCCESS, GET_DRAFT_USER_FAILURE,
-    SAVE_DRAFT_USER, DELETE_DRAFT_USER, FILL_DRAFT_USER,
+    SAVE_DRAFT_USER, SAVE_DRAFT_USER_FAILURE,
+    FILL_DRAFT_USER, FILL_DRAFT_USER_FAILURE,
+    DELETE_DRAFT_USER, DELETE_DRAFT_USER_REQUEST, DELETE_DRAFT_USER_SUCCESS, DELETE_DRAFT_USER_FAILURE,
     CLEAR_USER,
 } from '../actions/userActions';
 
@@ -32,6 +34,10 @@ export function* saveUserSaga(data) {
 
         yield put({
             type: CLEAR_USER,
+        });
+
+        yield put({
+            type: DELETE_DRAFT_USER_REQUEST,
         });
 
     } catch (err) {
@@ -134,18 +140,12 @@ export function* destroyUserSaga(data) {
 export function* saveDraftUserSaga(data) {
     try {
         yield call(api.saveDraft, data.payload);
-
-        // yield put({
-        //     type: DESTROY_USER_SUCCESS,
-        //     payload: response,
-        // });
-
     } catch (err) {
         console.error(err);
-        // yield put({
-        //     type: DESTROY_USER_FAILURE,
-        //     payload: err,
-        // });
+        yield put({
+            type: SAVE_DRAFT_USER_FAILURE,
+            payload: err,
+        });
     }
 }
 
@@ -185,42 +185,39 @@ export function* fillDraftUserSaga() {
         yield call(api.destroyDraft);
 
         yield put({
-            type: DELETE_DRAFT_USER,
+            type: DELETE_DRAFT_USER_REQUEST,
         });
 
     } catch (err) {
         yield put({
-            type: GET_USER_FAILURE,
+            type: FILL_DRAFT_USER_FAILURE,
             payload: err,
         });
     }
 }
 
-// /**
-//  * get draft user
-//  */
-// export function* fillDraftUserSaga() {
-//     try {
-//         const draft = yield select(state => state.draft.user);
-//
-//         yield put({
-//             type: GET_USER_SUCCESS,
-//             payload: { ...draft, step: undefined },
-//         });
-//
-//         yield call(api.destroyDraft);
-//
-//         yield put({
-//             type: DELETE_DRAFT_USER,
-//         });
-//
-//     } catch (err) {
-//         yield put({
-//             type: GET_USER_FAILURE,
-//             payload: err,
-//         });
-//     }
-// }
+/**
+ * get draft user
+ */
+export function* deleteDraftUserSaga() {
+    try {
+        yield put({
+            type: DELETE_DRAFT_USER,
+        });
+
+        yield call(api.destroyDraft);
+
+        yield put({
+            type: DELETE_DRAFT_USER_SUCCESS,
+        });
+
+    } catch (err) {
+        yield put({
+            type: DELETE_DRAFT_USER_FAILURE,
+            payload: err,
+        });
+    }
+}
 
 
 /**
@@ -236,6 +233,7 @@ export default function* user() {
         takeLatest(SAVE_DRAFT_USER, saveDraftUserSaga),
         takeLatest(GET_DRAFT_USER_REQUEST, getDraftUserSaga),
         takeLatest(FILL_DRAFT_USER, fillDraftUserSaga),
+        takeLatest(DELETE_DRAFT_USER_REQUEST, deleteDraftUserSaga),
     ]);
 }
 
