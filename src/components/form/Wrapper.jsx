@@ -52,16 +52,13 @@ class Wrapper extends Component {
         classes: PropTypes.object.isRequired,
     };
 
-    state = {
-        step: 1,
-    };
-
     constructor(props) {
         super(props);
 
         const { match: { params: { id } } } = props;
 
         this.state = {
+            step: 1,
             isEdit: Boolean(id),
         }
     }
