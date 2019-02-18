@@ -201,7 +201,7 @@ class Wrapper extends Component {
                         value="profile"
                         component={Link}
                         to={`/user/profile/${id || ''}`}
-                        disabled={!this.isEdit() && step < 2}
+                        disabled={!isEdit && step < 2}
                     />
                     <Tab
                         classes={{
@@ -211,7 +211,7 @@ class Wrapper extends Component {
                         value="contacts"
                         component={Link}
                         to={`/user/contacts/${id || ''}`}
-                        disabled={!this.isEdit() && step < 3}
+                        disabled={!isEdit && step < 3}
                     />
                     <Tab
                         classes={{
@@ -221,7 +221,7 @@ class Wrapper extends Component {
                         value="capabilities"
                         component={Link}
                         to={`/user/capabilities/${id || ''}`}
-                        disabled={!this.isEdit() && step < 4}
+                        disabled={!isEdit && step < 4}
                     />
                 </Tabs>
                 { this.renderDraft() }
