@@ -1,40 +1,17 @@
 import React, { Component } from 'react';
-// import Button from '@material-ui/core/Button';
 // eslint-disable-next-line
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-
-import "react-datepicker/dist/react-datepicker.css";
-
-import {Grid, TextField, Button, FormGroup, FormLabel, Checkbox } from '@material-ui/core';
-import { Field, reduxForm } from 'redux-form';
-
+import {Field, reduxForm, SubmissionError} from 'redux-form';
 import { getHobbiesAction, getSkillsAction } from '../../actions/staticActions';
 
-import SelectInput from '../common/form/controls/Select';
+import { Grid, Button, FormGroup, FormLabel, Checkbox } from '@material-ui/core';
 
-const MultiTextField = props => {
-    const { input, label, type, meta: { touched, error }, ...other } = props;
+import { Select, MultiTextInput } from '../common/form/controls';
 
-    return (
-        <TextField
-            variant="outlined"
-            fullWidth={true}
-            margin="normal"
-            multiline
-            rowsMax="4"
-            label={label}
-            type={type}
-            error={!!(touched && error)}
-            { ...input }
-            { ...other }
-        />
-    )
-};
+import { minCountValidation, maxLengthValidation } from '../../utils';
 
-const renderCheckboxGroup = ({ name, options, input, meta, ...custom}) => {
-
+const renderCheckboxGroup = ({ name, options, input }) => {
     return options.map((option, i) => (
         <div key={i}>
             <Checkbox
@@ -56,8 +33,9 @@ const renderCheckboxGroup = ({ name, options, input, meta, ...custom}) => {
     ));
 };
 
-class Contacts extends Component {
+const maxLength300 = maxLengthValidation(300);
 
+class Capabilities extends Component {
     componentDidMount() {
         const { getSkills, getHobbies } = this.props;
 
@@ -65,15 +43,25 @@ class Contacts extends Component {
         getHobbies();
     }
 
-    qwe = (vals) => {
-        console.log('qwe', vals);
+    submit = async (values) => {
+        const { onSubmit } = this.props;
+        const validate = minCountValidation(values.skills);
+
+        if (validate == null) {
+            onSubmit(values);
+        } else {
+            throw new SubmissionError({
+                skills: validate,
+                _error: 'Failed!'
+            })
+        }
     };
 
     render() {
-        const { handleSubmit, skills } = this.props;
+        const { handleSubmit, skills, hobbies } = this.props;
 
         return (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(this.submit)}>
                 <Grid
                     container
                     spacing={8}
@@ -83,7 +71,7 @@ class Contacts extends Component {
                         <Field
                             name="skills"
                             label="Skills"
-                            component={SelectInput}
+                            component={Select}
                             options={[...skills]}
                             multiple
                         />
@@ -91,8 +79,9 @@ class Contacts extends Component {
                             rows={4}
                             name="additional"
                             type="text"
-                            component={MultiTextField}
+                            component={MultiTextInput}
                             label="Additional information-"
+                            validate={[maxLength300]}
                         />
 
                     </Grid>
@@ -102,7 +91,7 @@ class Contacts extends Component {
                             <Field
                                 name="hobbies"
                                 component={renderCheckboxGroup}
-                                options={this.props.hobbies}
+                                options={hobbies}
                             />
                         </FormGroup>
                         <div>
@@ -118,7 +107,6 @@ class Contacts extends Component {
 };
 
 const mapStateToProps = (state) => ({
-    user: state.user.user,
     skills: state.static.skills,
     hobbies: state.static.hobbies,
     initialValues: state.user.user,
@@ -129,18 +117,15 @@ const mapDispatchToProps = (dispatch)  => ({
     getHobbies: () => dispatch(getHobbiesAction()),
 });
 
-Contacts = reduxForm({
+Capabilities = reduxForm({
     form: 'wizard',
     destroyOnUnmount: false,
     enableReinitialize : true,
-    // onChange: (values, dispatch, props, previousValues) => {
-    //     console.log(values, props, previousValues);
-    //     props.submit();
-    // },
-})(Contacts);
+    touchOnBlur: false,
+})(Capabilities);
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Contacts);
+)(Capabilities);
 

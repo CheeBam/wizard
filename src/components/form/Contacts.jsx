@@ -2,32 +2,22 @@ import React, { Component } from 'react';
 // eslint-disable-next-line
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Select from 'react-select';
-
-import { Grid, TextField, Button } from '@material-ui/core';
 import { Field, FieldArray, reduxForm } from 'redux-form';
 
+import { getLanguagesAction } from "../../actions/staticActions";
 
+import { Grid, Button } from '@material-ui/core';
 // import { withStyles } from '@material-ui/core/styles';
 
-import { getLanguagesAction } from "../../actions/staticActions";
-import { countPhones } from '../../helpers';
 
 import {
     requiredValidation,
     isPhoneValidation,
 } from '../../utils';
 
-import TextInput from '../common/form/controls/TextInput';
-import PhoneInput from '../common/form/controls/PhoneInput';
-import SelectInput from '../common/form/controls/Select';
+import { TextInput, PhoneInput, Select } from '../common/form/controls';
 
 class Contacts extends Component {
-
-    static propTypes = {
-        isEdit: PropTypes.bool.isRequired,
-    };
-
     componentDidMount() {
         const { getLanguages } = this.props;
         getLanguages();
@@ -39,18 +29,18 @@ class Contacts extends Component {
                     variant="contained" color="secondary" type="button">
                 +
             </Button>
-            {fields.map((hobby, index) => (
+            {fields.map((phone, index) => (
                 <div key={index}>
                     <Button style={{visibility: fields.length < 2 ? 'hidden' : ''}} onClick={() => fields.remove(index)}
                             variant="contained" color="secondary" type="button">
                         -
                     </Button>
                     <Field
-                        name={hobby}
+                        name={phone}
                         type="text"
                         component={PhoneInput}
-                        label={`Hobby #${index + 1}`}
-                        // validate={[isPhoneValidation]}
+                        label={`Phone #${index + 1}`}
+                        validate={[isPhoneValidation]}
                     />
                 </div>
             ))}
@@ -90,10 +80,10 @@ class Contacts extends Component {
                         />
                         <Field
                             name="lang"
-                            label="Skills"
+                            label="Languages"
                             multiple={false}
                             options={[...languages]}
-                            component={SelectInput}
+                            component={Select}
                             validate={[requiredValidation]}
                         />
                     </Grid>
@@ -117,7 +107,6 @@ class Contacts extends Component {
 };
 
 const mapStateToProps = (state) => ({
-    user: state.user.user,
     languages: state.static.languages,
     initialValues: state.user.user,
 });
@@ -130,6 +119,7 @@ Contacts = reduxForm({
     form: 'wizard',
     destroyOnUnmount: false,
     enableReinitialize : true,
+    touchOnBlur: false,
 })(Contacts);
 
 export default connect(

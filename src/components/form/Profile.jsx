@@ -2,29 +2,39 @@ import React, { Component } from 'react';
 // eslint-disable-next-line
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 import "react-datepicker/dist/react-datepicker.css";
 
 import { Grid, Button } from '@material-ui/core';
-import { Field, reduxForm } from 'redux-form';
+import {Field, reduxForm, SubmissionError} from 'redux-form';
 
 // import { withStyles } from '@material-ui/core/styles';
 
-import DatePicker from '../common/form/controls/DatePicker';
-import RadioButton from '../common/form/controls/RadioButton';
-import TextInput from '../common/form/controls/TextInput';
-import GoogleAutoComplete from '../common/form/controls/GoogleAutoComplete';
+import { DatePicker, RadioGroup, TextInput, GoogleAutoComplete } from '../common/form/controls';
+import { requiredValidation, isAdult, serverEmail } from '../../utils';
 
-import { requiredValidation } from '../../utils';
+class Profile extends Component {
 
-class Account extends Component {
+    submit = async (values) => {
+        const { onSubmit, match: { params: { id } } } = this.props;
+        const validate = await serverEmail(values.email, id);
+
+        if (validate == null) {
+            onSubmit(values);
+        } else {
+            throw new SubmissionError({
+                email: validate,
+                _error: 'Failed!'
+            })
+        }
+    };
 
     render() {
         const { handleSubmit } = this.props;
 
         return (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(this.submit)}>
                 <Grid
                     container
                     spacing={8}
@@ -50,6 +60,7 @@ class Account extends Component {
                             type="text"
                             component={DatePicker}
                             label="Birthday"
+                            validate={[isAdult]}
                         />
                     </Grid>
                     <Grid item lg={6} md={6} xs={6}>
@@ -65,29 +76,15 @@ class Account extends Component {
                             component={GoogleAutoComplete}
                             label="Address"
                         />
-                        <label>Gender</label>
-                        <div>
-                            <label>
-                                <Field
-                                    name="sex"
-                                    component={RadioButton}
-                                    type="radio"
-                                    value="male"
-                                    validate={[requiredValidation]}
-                                />{' '}
-                                Male
-                            </label>
-                            <label>
-                                <Field
-                                    name="sex"
-                                    component={RadioButton}
-                                    type="radio"
-                                    value="female"
-                                    validate={[requiredValidation]}
-                                />{' '}
-                                Female
-                            </label>
-                        </div>
+                        <Field
+                            component={RadioGroup}
+                            name="sex"
+                            options={[
+                                { title: 'Male', value: 'male' },
+                                { title: 'Female', value: 'female' }
+                            ]}
+                            validate={[requiredValidation]}
+                        />
                         <div>
                             <Link to={'/user/account'}>
                                 <Button variant="contained" color="default" type="submit">
@@ -106,22 +103,22 @@ class Account extends Component {
 };
 
 const mapStateToProps = (state) => ({
-    user: state.user.user,
     initialValues: state.user.user,
 });
 
-const mapDispatchToProps = (dispatch)  => ({
+// const mapDispatchToProps = (dispatch)  => ({
+//
+// });
 
-});
-
-Account = reduxForm({
+Profile = reduxForm({
     form: 'wizard',
     destroyOnUnmount: false,
     enableReinitialize : true,
-})(Account);
+    touchOnBlur: false,
+})(Profile);
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
-    mapDispatchToProps
-)(Account);
+    null,
+)(Profile));
 

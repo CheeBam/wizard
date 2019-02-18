@@ -1,29 +1,18 @@
 import React, { Component } from 'react';
-// import Button from '@material-ui/core/Button';
 // eslint-disable-next-line
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from "react-router-dom";
 
-import { Grid, Button, Avatar } from '@material-ui/core';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, SubmissionError } from 'redux-form';
 
-import { withStyles } from '@material-ui/core/styles';
+import { Grid, Button, withStyles } from '@material-ui/core';
 
-import {
-    requiredValidation,
-    confirmPasswordValidation,
-} from '../../utils';
-
+import { requiredValidation, confirmPasswordValidation, serverUsername } from '../../utils';
 import { changeAvatarAction } from "../../actions/userActions";
-
-import PasswordInput from '../common/form/controls/PasswordInput';
-import TextInput from '../common/form/controls/TextInput';
+import { PasswordInput, TextInput, Avatar } from '../common/form/controls';
 
 const styles = {
-    avatar: {
-        width: 150,
-        height: 150,
-    },
     gridAvatar: {
         display: 'flex',
         justifyContent: 'center',
@@ -32,20 +21,24 @@ const styles = {
 };
 
 class Account extends Component {
-    encodeImageFileAsURL = e => {
-        const { changeAvatar } = this.props;
-        const file = e.target.files[0];
-        const reader = new FileReader();
 
-        reader.onloadend = () => {
-            changeAvatar(reader.result);
-        };
+    submit = async (values) => {
+        const { onSubmit, match: { params: { id } } } = this.props;
+        const validate = await serverUsername(values.username, id);
 
-        reader.readAsDataURL(file);
+        if (validate == null) {
+
+            onSubmit(values);
+        } else {
+            throw new SubmissionError({
+                username: validate,
+                _error: 'Failed!'
+            })
+        }
     };
 
     render() {
-        const { handleSubmit, classes, user } = this.props;
+        const { handleSubmit, classes } = this.props;
 
         return (
             <Grid
@@ -54,16 +47,14 @@ class Account extends Component {
                 justify="center"
             >
                 <Grid item lg={6} md={6} xs={6} classes={{item: classes.gridAvatar}}>
-                    <Avatar alt="Remy Sharp" src={user.avatar} classes={{ root: classes.avatar }} />
-                    <input type="file" onChange={this.encodeImageFileAsURL} id="fileUpload" name="files"/>
+                    <Field
+                        name="avatar"
+                        type="hidden"
+                        component={Avatar}
+                    />
                 </Grid>
                 <Grid item lg={6} md={6} xs={6}>
-                    <form onSubmit={handleSubmit}>
-                        <Field
-                            name="avatar"
-                            type="hidden"
-                            component={TextInput}
-                        />
+                    <form onSubmit={handleSubmit(this.submit)}>
                         <Field
                             name="username"
                             type="text"
@@ -98,7 +89,6 @@ class Account extends Component {
 };
 
 const mapStateToProps = (state) => ({
-    user: state.user.user,
     initialValues: state.user.user,
 });
 
@@ -110,9 +100,10 @@ const connectedAccount = reduxForm({
     form: 'wizard',
     destroyOnUnmount: false,
     enableReinitialize : true,
+    touchOnBlur: false,
 })(Account);
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(withStyles(styles)(connectedAccount));
+)(withStyles(styles)(connectedAccount)));
