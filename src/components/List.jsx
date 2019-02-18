@@ -1,4 +1,4 @@
-import React, { Fragment, Component } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { DateTime} from 'luxon';
 import { Link as RouterLink } from 'react-router-dom';
@@ -34,7 +34,7 @@ const styles = {
 
 };
 
-class List extends Component {
+class List extends PureComponent {
     componentDidMount() {
         const { getAll } = this.props;
 

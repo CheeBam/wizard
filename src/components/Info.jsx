@@ -3,12 +3,12 @@ import React, {Component, Fragment} from 'react';
 // eslint-disable-next-line
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Immutable from 'seamless-immutable';
 
-import {Grid, TextField, Button, Radio, Avatar, withStyles, Link as MaterialLink} from '@material-ui/core';
+import { Grid, Avatar, Link as MaterialLink, withStyles } from '@material-ui/core';
 
 import { getUserAction, clearUserAction } from '../actions/userActions';
-
-// import { withStyles } from '@material-ui/core/styles';
+import { getHobbiesAction } from '../actions/staticActions';
 
 import {Link} from "react-router-dom";
 import PageTitle from './PageTitle';
@@ -19,13 +19,13 @@ const styles = {
         height: 200,
         border: '2px solid blue',
     },
-}
+};
 
 class Info extends Component {
 
     componentDidMount() {
-        const { match: {params: {id}} , getUser} = this.props;
-
+        const { match: {params: {id}} , getUser, getHobbies } = this.props;
+        getHobbies();
         getUser(id);
     }
 
@@ -44,7 +44,7 @@ class Info extends Component {
     }
 
     render() {
-        const { user, classes } = this.props;
+        const { user, classes, hobbies } = this.props;
 
         //TODO: make map of users - make 4 chunks with chunk name, field visibility, name, value
 
@@ -82,7 +82,7 @@ class Info extends Component {
                                 <p>Password:</p>
                             </Grid>
                             <Grid item lg={4} md={6} xs={6}>
-                                <p>{ user.username }</p>
+                                <p>{ user.username } sklfd jaksdn lkajsnd alsdn klansdklam, sdjnasl kjdnalskjdnasndlk ansdjnals kdnaskd</p>
                                 <p>{ ''.padStart(user.password && user.password.length, '*')}</p>
                             </Grid>
                         </Grid>
@@ -97,7 +97,7 @@ class Info extends Component {
                                     component="button"
                                     variant="caption"
                                     color="inherit"
-                                    onClick={this.toEdit('personal')}
+                                    onClick={this.toEdit('profile')}
                                 >
                                     edit
                                 </MaterialLink>
@@ -138,18 +138,18 @@ class Info extends Component {
                                 <p>{ user.fax ? 'Fax:' : '' }</p>
                                 <p>{ user.facebook ? 'Facebook link:' : '' }</p>
                                 <p>{ user.github ? 'Github link:' : '' }</p>
-                                <p>{ user.phone1 ? 'Phone #1:' : '' }</p>
-                                <p>{ user.phone2 ? 'Phone #2:' : '' }</p>
-                                <p>{ user.phone3 ? 'Phone #3:' : '' }</p>
+                                { Immutable.asMutable(user.phones)
+                                    .map((item, i) => (item && item.length > 0 && <p key={i}>{`Phone #${++i}`}</p>))
+                                }
                             </Grid>
                             <Grid item lg={4} md={6} xs={6}>
                                 <p>{ user.company }</p>
                                 <p>{ user.fax }</p>
                                 <p>{ user.facebook }</p>
                                 <p>{ user.github }</p>
-                                <p>{ user.phone1 }</p>
-                                <p>{ user.phone2 }</p>
-                                <p>{ user.phone3 }</p>
+                                { Immutable.asMutable(user.phones)
+                                    .map((item, i) => (item && item.length > 0 && <p key={i}>{ item.toString() }</p>))
+                                }
                             </Grid>
                         </Grid>
 
@@ -175,9 +175,9 @@ class Info extends Component {
                             </Grid>
                             <Grid item lg={4} md={6} xs={6}>
                                 <p>
-                                    { user.skills.length > 0 && user.skills.map(item => `${item.label}, `)}
+                                   { user.skills.length > 0 && user.skills.map(item => item.label).join(',')}
                                 </p>
-                                <p>{ user.hobbies.length > 0 && user.hobbies.join(', ') }</p>
+                                <p>{ user.hobbies.length > 0 && hobbies.filter(item => user.hobbies.includes(item.id)).map(item => item.label).join(', ') }</p>
                                 <p>{ user.additional }</p>
                             </Grid>
                         </Grid>
@@ -190,11 +190,13 @@ class Info extends Component {
 
 const mapStateToProps = (state) => ({
     user: state.user.user,
+    hobbies: state.static.hobbies,
 });
 
 const mapDispatchToProps = (dispatch)  => ({
     getUser: id => dispatch(getUserAction(id)),
     clearUser: () => dispatch(clearUserAction()),
+    getHobbies: () => dispatch(getHobbiesAction()),
 });
 
 export default connect(

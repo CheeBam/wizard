@@ -16,6 +16,7 @@ import {
     saveDraftUserAction,
     getDraftUserAction,
     fillDraftUserAction,
+    deleteDraftUserAction,
     clearUserAction,
 } from '../../actions/userActions';
 
@@ -35,6 +36,14 @@ const styles = {
     indicator: {
         background: 'transparent',
     },
+    toolbar: {
+        display: 'flex',
+        justifyContent: 'space-between',
+    },
+    toolbarString: {
+        display: 'flex',
+        alignItems: 'center',
+    }
 };
 
 class Wrapper extends Component {
@@ -66,7 +75,7 @@ class Wrapper extends Component {
         } else {
             getDraftUser();
             if (url !== '/user/account') {
-                // history.replace('/user/account');
+                history.replace('/user/account');
             }
         }
     }
@@ -86,24 +95,40 @@ class Wrapper extends Component {
         fillDraftUser();
     };
 
+    clearDraftFields = () => {
+        const { deleteDraftUser } = this.props;
+
+        deleteDraftUser();
+    };
+
     renderDraft() {
-        const { draftExists } = this.props;
+        const { draftExists, classes } = this.props;
 
         if (draftExists) {
             return (
                 <AppBar position="static">
-                    <Toolbar variant="dense">
-                        <Typography variant="caption" color="inherit">
-                            You have an unsaved user data. Do you want to complete it?
-                        </Typography>
-                        &nbsp;
+                    <Toolbar variant="dense" classes={{ root: classes.toolbar }}>
+                        <div className={classes.toolbarString}>
+                            <Typography variant="caption" color="inherit">
+                                You have an unsaved user data. Do you want to complete it?
+                            </Typography>
+                            &nbsp;
+                            <MaterialLink
+                                component="button"
+                                variant="caption"
+                                color="inherit"
+                                onClick={this.fillDraftFields}
+                            >
+                                Continue
+                            </MaterialLink>
+                        </div>
                         <MaterialLink
                             component="button"
                             variant="caption"
                             color="inherit"
-                            onClick={this.fillDraftFields}
+                            onClick={this.clearDraftFields}
                         >
-                            Continue
+                            &#10006;
                         </MaterialLink>
                     </Toolbar>
                 </AppBar>
@@ -176,7 +201,7 @@ class Wrapper extends Component {
                         value="profile"
                         component={Link}
                         to={`/user/profile/${id || ''}`}
-                        // disabled={!this.isEdit() && step < 2}
+                        disabled={!this.isEdit() && step < 2}
                     />
                     <Tab
                         classes={{
@@ -186,7 +211,7 @@ class Wrapper extends Component {
                         value="contacts"
                         component={Link}
                         to={`/user/contacts/${id || ''}`}
-                        // disabled={!this.isEdit() && step < 3}
+                        disabled={!this.isEdit() && step < 3}
                     />
                     <Tab
                         classes={{
@@ -196,15 +221,15 @@ class Wrapper extends Component {
                         value="capabilities"
                         component={Link}
                         to={`/user/capabilities/${id || ''}`}
-                        // disabled={!this.isEdit() && step < 4}
+                        disabled={!this.isEdit() && step < 4}
                     />
                 </Tabs>
                 { this.renderDraft() }
                 <Switch>
-                    <Route path='/user/account/:id?' render={() => <Account isEdit={isEdit} onSubmit={this.handleSubmitMethod('profile', 2)} />} />
-                    <Route path='/user/profile/:id?' render={() => <Profile isEdit={isEdit} onSubmit={this.handleSubmitMethod('contacts', 3)} />} />
-                    <Route path='/user/contacts/:id?' render={() => <Contacts isEdit={isEdit} onSubmit={this.handleSubmitMethod('capabilities', 4)} />} />
-                    <Route path='/user/capabilities/:id?' render={() => <Capabilities isEdit={isEdit} onSubmit={this.handleSubmitMethodWithSave()}/>} />
+                    <Route path='/user/account/:id?' render={() => <Account onSubmit={this.handleSubmitMethod('profile', 2)} />} />
+                    <Route path='/user/profile/:id?' render={() => <Profile onSubmit={this.handleSubmitMethod('contacts', 3)} />} />
+                    <Route path='/user/contacts/:id?' render={() => <Contacts onSubmit={this.handleSubmitMethod('capabilities', 4)} />} />
+                    <Route path='/user/capabilities/:id?' render={() => <Capabilities onSubmit={this.handleSubmitMethodWithSave()}/>} />
                 </Switch>
             </Fragment>
         );
@@ -226,6 +251,7 @@ const mapDispatchToProps = (dispatch)  => ({
     saveDraftUser: data => dispatch(saveDraftUserAction(data)),
     getDraftUser: () => dispatch(getDraftUserAction()),
     fillDraftUser: () => dispatch(fillDraftUserAction()),
+    deleteDraftUser: () => dispatch(deleteDraftUserAction()),
     clearUserState: () => dispatch(clearUserAction()),
 });
 
