@@ -8,7 +8,7 @@ import { Field, reduxForm, SubmissionError } from 'redux-form';
 
 import { Grid, Button, withStyles } from '@material-ui/core';
 
-import { requiredValidation, confirmPasswordValidation, serverUsername } from '../../utils';
+import { requiredValidation, confirmPasswordValidation, serverUsernameValidation } from '../../utils';
 import { changeAvatarAction } from "../../actions/userActions";
 import { PasswordInput, TextInput, Avatar } from '../common/form/controls';
 
@@ -24,7 +24,7 @@ class Account extends Component {
 
     submit = async (values) => {
         const { onSubmit, match: { params: { id } } } = this.props;
-        const validate = await serverUsername(values.username, id);
+        const validate = await serverUsernameValidation(values.username, id);
 
         if (validate == null) {
 

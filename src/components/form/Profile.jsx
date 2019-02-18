@@ -12,13 +12,13 @@ import {Field, reduxForm, SubmissionError} from 'redux-form';
 // import { withStyles } from '@material-ui/core/styles';
 
 import { DatePicker, RadioGroup, TextInput, GoogleAutoComplete } from '../common/form/controls';
-import { requiredValidation, isAdult, serverEmail } from '../../utils';
+import { requiredValidation, isAdultValidation, serverEmailValidation } from '../../utils';
 
 class Profile extends Component {
 
     submit = async (values) => {
         const { onSubmit, match: { params: { id } } } = this.props;
-        const validate = await serverEmail(values.email, id);
+        const validate = await serverEmailValidation(values.email, id);
 
         if (validate == null) {
             onSubmit(values);
@@ -60,7 +60,7 @@ class Profile extends Component {
                             type="text"
                             component={DatePicker}
                             label="Birthday"
-                            validate={[isAdult]}
+                            validate={[isAdultValidation]}
                         />
                     </Grid>
                     <Grid item lg={6} md={6} xs={6}>

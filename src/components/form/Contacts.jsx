@@ -9,11 +9,7 @@ import { getLanguagesAction } from "../../actions/staticActions";
 import { Grid, Button } from '@material-ui/core';
 // import { withStyles } from '@material-ui/core/styles';
 
-
-import {
-    requiredValidation,
-    isPhoneValidation,
-} from '../../utils';
+import { requiredValidation, isPhoneValidation } from '../../utils';
 
 import { TextInput, PhoneInput, Select } from '../common/form/controls';
 
