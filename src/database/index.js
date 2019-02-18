@@ -175,10 +175,11 @@ export default class Database {
     };
 
     /**
-     * Get data by id
+     * Get data by field
      *
      * @param table table name
-     * @param id needed id
+     * @param key table field
+     * @param value field value
      * @returns Object field
      */
     static getByKey = async (table, key, value) => {
@@ -188,11 +189,13 @@ export default class Database {
                     await Database.connect();
                 }
 
-                console.log('DB fetch by key', table, key);
+                console.log('DB fetch by key', table, key, value);
 
                 const store = Database.instance.transaction([table], 'readonly').objectStore(table);
-                const index = store.index(`${table}_id_unique`);
-                const request = index.get(key);
+                const index = store.index(`${table}_${key}_unique`);
+
+                const singleKeyRange = IDBKeyRange.only(value);
+                const request = index.get(singleKeyRange);
 
                 request.onsuccess = (e) => {
                     console.log('Fetch by key success');
@@ -277,8 +280,7 @@ export default class Database {
                     const cursor = e.target.result;
 
                     if (cursor) {
-                        let item = {...cursor.value, ...data, updatedAt: DateTime.local().toISO() };
-                        console.log(item);
+                        let item = {...cursor.value, ...data, id: Number(id), updatedAt: DateTime.local().toISO() };
                         cursor.update(item);
                         console.log('Update success');
                         resolve(item);
