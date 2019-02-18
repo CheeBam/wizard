@@ -1,18 +1,26 @@
-import TextInput from './TextInput';
 import React from 'react';
+import PropTypes from 'prop-types';
 
-const MultiTextInput = props => {
+import TextInput from './TextInput';
+
+const MultiTextInput = props =>{
+    const { rows } = props;
 
     return (
         <TextInput
             { ...props }
             multiline
-            rowsMax="4"
+            rowsMax={rows}
         />
-    )
+    );
 };
-//TODO: rowMax props
-// def props 4
-// index.js def exp
+
+MultiTextInput.propTypes = {
+    rows: PropTypes.number,
+};
+
+MultiTextInput.defaultProps = {
+    rows: 4,
+};
 
 export default MultiTextInput;

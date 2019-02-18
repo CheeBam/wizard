@@ -8,11 +8,6 @@ import Wrapper from './components/form/Wrapper';
 import Info from './components/Info';
 import Header from './components/Header';
 
-import Account from './components/form/Account';
-import Profile from './components/form/Profile';
-import Contacts from './components/form/Contacts';
-import Capabilities from './components/form/Capabilities';
-
 const styles = {
     container: {
         maxWidth: 970,
@@ -52,7 +47,7 @@ class App extends Component {
         const { classes } = this.props;
 
         return (
-            <div id="app">
+            <div id='app'>
                 <Header value={value} handleChange={this.onHandleChange} />
                 <div className={classes.container}>
                     <Switch>

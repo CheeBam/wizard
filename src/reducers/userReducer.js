@@ -5,8 +5,7 @@ import {
     UPDATE_USER_REQUEST, UPDATE_USER_SUCCESS, UPDATE_USER_FAILURE,
     GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE,
     GET_ALL_REQUEST, GET_ALL_SUCCESS, GET_ALL_FAILURE,
-    DESTROY_USER_REQUEST, DESTROY_USER_SUCCESS, DESTROY_USER_FAILURE,
-    CHANGE_USER_AVATAR, CLEAR_USER,
+    DESTROY_USER_SUCCESS, CHANGE_USER_AVATAR, CLEAR_USER,
 } from '../actions/userActions';
 
 import { DEFAULT_AVATAR } from '../helpers/constants';
@@ -49,7 +48,6 @@ export default function userReducer(state = INITIAL_STATE, action) {
         case SAVE_USER_REQUEST:
         case UPDATE_USER_REQUEST:
         case GET_USER_REQUEST:
-        case DESTROY_USER_REQUEST:
             return state.merge({
                 fetching: true,
                 error: false,
@@ -59,7 +57,6 @@ export default function userReducer(state = INITIAL_STATE, action) {
         case UPDATE_USER_FAILURE:
         case GET_USER_FAILURE:
         case GET_ALL_FAILURE:
-        case DESTROY_USER_FAILURE:
             return state.merge({
                 fetching: false,
                 error: true,

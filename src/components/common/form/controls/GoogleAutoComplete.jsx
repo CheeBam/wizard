@@ -1,12 +1,10 @@
 // GoogleAutocomplete.js
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormControl, InputLabel, TextField, Paper } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import { change } from 'redux-form';
+import { TextField, Paper } from '@material-ui/core';
+// import { withStyles } from '@material-ui/core/styles';
 import PlacesAutocomplete from 'react-places-autocomplete';
 import {reduxForm} from "redux-form";
-import {connect} from "react-redux";
 
 import { scriptExists } from '../../../../helpers';
 
@@ -43,30 +41,25 @@ class GoogleAutocomplete extends React.Component {
         classes: PropTypes.object,
     };
 
-   static defaultProps = {
+    static defaultProps = {
         input: {},
         classes: {},
     };
 
-    handleChange = address => {
-        const { input } = this.props;
-        input.onChange(address)
-    };
-
-    handleSelect = address => {
+    handle = address => {
         const { input } = this.props;
         input.onChange(address)
     };
 
     render() {
-        const { input, label, meta: { touched, error }, ...other } = this.props;
+        const { input, label, meta: { touched, error } } = this.props;
         const { apiLoaded } = this.state;
         if (apiLoaded) {
             return (
                 <PlacesAutocomplete
                     value={input.value}
-                    onChange={this.handleChange}
-                    onSelect={this.handleSelect}
+                    onChange={this.handle}
+                    onSelect={this.handle}
                     debounce={700}
                 >
                     {({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
@@ -112,17 +105,15 @@ class GoogleAutocomplete extends React.Component {
                 </PlacesAutocomplete>
             );
         } else {
-            return null;
+            return (<div>Api doesn't loaded</div>);
         }
     }
 }
 
-GoogleAutocomplete = reduxForm({
+export default GoogleAutocomplete = reduxForm({
     form: 'profile',
     destroyOnUnmount: false,
     enableReinitialize : true,
 })(GoogleAutocomplete);
-
-export default connect(null, null)(GoogleAutocomplete);
 
 
