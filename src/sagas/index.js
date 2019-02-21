@@ -7,5 +7,5 @@ import staticSaga from './staticSagas';
  * rootSaga
  */
 export default function* root() {
-    yield all([fork(user), fork(staticSaga)]);
+  yield all([fork(user), fork(staticSaga)]);
 }

@@ -7,45 +7,48 @@ import { styles } from './styles.jsx';
 import { TextInput } from './index';
 
 class PasswordInput extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            passwordIsMasked: true,
-        };
-    }
-
-    togglePasswordMask = () => {
-        this.setState(prevState => ({
-            passwordIsMasked: !prevState.passwordIsMasked,
-        }));
+    this.state = {
+      passwordIsMasked: true,
     };
+  }
 
-    render() {
-        const { passwordIsMasked } = this.state;
-        const { classes } = this.props;
+  togglePasswordMask = () => {
+    this.setState(prevState => ({
+      passwordIsMasked: !prevState.passwordIsMasked,
+    }));
+  };
 
-        return (
-            <TextInput
-                { ...this.props }
-                type={passwordIsMasked ? 'password' : 'text'}
-                endAdornment={(
-                    <InputAdornment position='end' classes={{ root: classes.endAdornment }}>
-                        <IconButton
-                            aria-label='Toggle password visibility'
-                            onClick={this.togglePasswordMask}
-                        >
-                            { passwordIsMasked ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                    </InputAdornment>
-                )}
-            />
-        );
-    }
+  render() {
+    const { passwordIsMasked } = this.state;
+    const { classes } = this.props;
+
+    return (
+      <TextInput
+        {...this.props}
+        type={passwordIsMasked ? 'password' : 'text'}
+        endAdornment={
+          <InputAdornment
+            position="end"
+            classes={{ root: classes.endAdornment }}
+          >
+            <IconButton
+              aria-label="Toggle password visibility"
+              onClick={this.togglePasswordMask}
+            >
+              {passwordIsMasked ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          </InputAdornment>
+        }
+      />
+    );
+  }
 }
 
 PasswordInput.propTypes = {
-    classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(PasswordInput);

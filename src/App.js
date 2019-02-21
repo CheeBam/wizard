@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Route, Switch} from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -9,56 +9,53 @@ import Info from './components/Info';
 import Header from './components/Header';
 
 const styles = {
-    container: {
-        width: 970,
-        margin: '0 auto',
-        position: 'relative',
-    },
+  container: {
+    width: 970,
+    margin: '0 auto',
+    position: 'relative',
+  },
 };
 
 class App extends Component {
+  constructor() {
+    super();
 
-    constructor() {
-        super();
+    let temp = window.location.hash.split('/')[1];
 
-
-        let temp = window.location.hash.split('/')[1];
-
-        if (temp === '') {
-            temp = 'list'
-        }
-
-        this.state = {
-            value: temp,
-        }
-
+    if (temp === '') {
+      temp = 'list';
     }
 
-    state = {
-        value: '',
+    this.state = {
+      value: temp,
     };
+  }
 
-    onHandleChange = (event, value) => {
-        this.setState({ value });
-    };
+  state = {
+    value: '',
+  };
 
-    render() {
-        const { value } = this.state;
-        const { classes } = this.props;
+  onHandleChange = (event, value) => {
+    this.setState({ value });
+  };
 
-        return (
-            <div id='app'>
-                <Header value={value} handleChange={this.onHandleChange} />
-                <div className={classes.container}>
-                    <Switch>
-                        <Route path="/info/:id" component={Info} />
-                        <Route path="/user/:tab/:id?" component={Wrapper} />
-                        <Route path="/" component={List} />
-                    </Switch>
-                </div>
-            </div>
-        );
-    }
+  render() {
+    const { value } = this.state;
+    const { classes } = this.props;
+
+    return (
+      <div id="app">
+        <Header value={value} handleChange={this.onHandleChange} />
+        <div className={classes.container}>
+          <Switch>
+            <Route path="/info/:id" component={Info} />
+            <Route path="/user/:tab/:id?" component={Wrapper} />
+            <Route path="/" component={List} />
+          </Switch>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default withStyles(styles)(App);

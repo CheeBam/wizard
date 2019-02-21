@@ -1,19 +1,22 @@
-import Database from "../database";
+import Database from '../database';
 
 const getLanguages = async (meta = {}) => {
-    return await Database.getAll('languages', meta);
+  const result = await Database.getAll('languages', meta);
+  return result;
 };
 
 const getSkills = async (meta = {}) => {
-    return await Database.getAll('skills', meta);
+  const result = await Database.getAll('skills', meta);
+  return result;
 };
 
 const getHobbies = async (meta = {}) => {
-    return await Database.getAll('hobbies', meta);
+  const result = await Database.getAll('hobbies', meta);
+  return result;
 };
 
 export default {
-    getLanguages,
-    getSkills,
-    getHobbies,
+  getLanguages,
+  getSkills,
+  getHobbies,
 };

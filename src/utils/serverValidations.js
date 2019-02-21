@@ -9,15 +9,15 @@ import Database from '../database';
  * @return {null|string}
  */
 export async function validateUsername(username, id = null) {
-    const result = await Database.getByKey('users', 'username', username);
-    if (Boolean(result)) {
-        if (id && +result.id === +id) {
-            return null;
-        }
-    } else {
-        return null;
+  const result = await Database.getByKey('users', 'username', username);
+  if (result) {
+    if (id && +result.id === +id) {
+      return null;
     }
-    return 'Username already exists';
+  } else {
+    return null;
+  }
+  return 'Username already exists';
 }
 
 /**
@@ -29,13 +29,13 @@ export async function validateUsername(username, id = null) {
  * @return {null|string}
  */
 export async function validateEmail(email, id = null) {
-    const result = await Database.getByKey('users', 'email', email);
-    if (Boolean(result)) {
-        if (id && +result.id === +id) {
-            return null;
-        }
-    } else {
-        return null;
+  const result = await Database.getByKey('users', 'email', email);
+  if (result) {
+    if (id && +result.id === +id) {
+      return null;
     }
-    return 'Email already exists';
+  } else {
+    return null;
+  }
+  return 'Email already exists';
 }

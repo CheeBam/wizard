@@ -6,10 +6,10 @@ import draft from './draftUserReducer';
 import staticReducer from './staticReducer';
 
 const rootReducer = combineReducers({
-    form: reduxFormReducer,
-    user,
-    draft,
-    static: staticReducer,
+  form: reduxFormReducer,
+  user,
+  draft,
+  static: staticReducer,
 });
 
 export default rootReducer;
