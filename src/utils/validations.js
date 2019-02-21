@@ -1,5 +1,5 @@
 import { DateTime} from 'luxon';
-import { USER_MIN_AGE } from '../helpers/constants';
+import { USER_MIN_AGE, MAX_IMAGE_SIZE, MB_IN_BYTES } from '../helpers/constants';
 
 /**
  * Validate email
@@ -121,4 +121,27 @@ export function confirmPassword(value, values) {
  */
 export function required(value) {
     return value ? null : 'Field is required';
+}
+
+/**
+ * Required object empty validation
+ *
+ * @param {any} value
+ *
+ * @return {null|string}
+ */
+export function requiredNotEmpty(value) {
+    if (typeof value === 'object') {
+        return Object.keys(value).length ? null : 'Field is required';
+    }
+    return value ? null : 'Field is required';
+}
+
+export function image(value) {
+    if (value) {
+        if (parseInt((value).replace(/=/g, "").length * 0.75) > MB_IN_BYTES * MAX_IMAGE_SIZE) {
+            return `The image maximum size is ${MAX_IMAGE_SIZE}MB`;
+        }
+    }
+    return null;
 }
