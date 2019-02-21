@@ -6,13 +6,37 @@ import { Link, withRouter } from "react-router-dom";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-import { Grid, Button } from '@material-ui/core';
+import {Grid, withStyles} from '@material-ui/core';
 import {Field, reduxForm, SubmissionError} from 'redux-form';
 
-// import { withStyles } from '@material-ui/core/styles';
+import { requiredValidation, isAdultValidation, serverEmailValidation } from '../../utils';
 
 import { DatePicker, RadioGroup, TextInput, GoogleAutoComplete } from '../common/form/controls';
-import { requiredValidation, isAdultValidation, serverEmailValidation } from '../../utils';
+import { Button } from '../common/form/buttons';
+
+
+const styles = {
+    container: {
+        paddingTop: 43,
+        background: '#FAFCFF',
+    },
+    formInputs: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: 300,
+    },
+    grid: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+    },
+    buttonsDiv: {
+        marginTop: 50,
+        display: 'flex',
+        justifyContent: 'space-between',
+        width: 300,
+    }
+};
 
 class Profile extends Component {
 
@@ -31,69 +55,70 @@ class Profile extends Component {
     };
 
     render() {
-        const { handleSubmit } = this.props;
+        const { handleSubmit, classes } = this.props;
 
         return (
             <form onSubmit={handleSubmit(this.submit)}>
                 <Grid
                     container
-                    spacing={8}
                     justify="center"
+                    classes={{ container: classes.container }}
                 >
-                    <Grid item lg={6} md={6} xs={6}>
-                        <Field
-                            name="firstName"
-                            type="text"
-                            component={TextInput}
-                            label="FirstName"
-                            validate={[requiredValidation]}
-                        />
-                        <Field
-                            name="lastName"
-                            type="text"
-                            component={TextInput}
-                            label="LastName"
-                            validate={[requiredValidation]}
-                        />
-                        <Field
-                            name="birthday"
-                            type="text"
-                            component={DatePicker}
-                            label="Birthday"
-                            validate={[isAdultValidation]}
-                        />
+                    <Grid item lg={6} md={6} xs={6} className={classes.grid}>
+                        <div className={classes.formInputs}>
+                            <Field
+                                name="firstName"
+                                type="text"
+                                component={TextInput}
+                                label="FirstName"
+                                validate={[requiredValidation]}
+                            />
+                            <Field
+                                name="lastName"
+                                type="text"
+                                component={TextInput}
+                                label="LastName"
+                                validate={[requiredValidation]}
+                            />
+                            <Field
+                                name="birthday"
+                                type="text"
+                                component={DatePicker}
+                                label="Birthday"
+                                validate={[isAdultValidation]}
+                            />
+                        </div>
                     </Grid>
-                    <Grid item lg={6} md={6} xs={6}>
-                        <Field
-                            name="email"
-                            type="email"
-                            component={TextInput}
-                            label="Email"
-                            validate={[requiredValidation]}
-                        />
-                        <Field
-                            name="address"
-                            component={GoogleAutoComplete}
-                            label="Address"
-                        />
-                        <Field
-                            component={RadioGroup}
-                            name="sex"
-                            options={[
-                                { title: 'Male', value: 'male' },
-                                { title: 'Female', value: 'female' }
-                            ]}
-                            validate={[requiredValidation]}
-                        />
-                        <div>
-                            <Link to={'/user/account'}>
-                                <Button variant="contained" color="default" type="submit">
-                                    Back
-                                </Button>
+                    <Grid item lg={6} md={6} xs={6} className={classes.grid}>
+                        <div className={classes.formInputs}>
+                            <Field
+                                name="email"
+                                type="email"
+                                component={TextInput}
+                                label="Email"
+                                validate={[requiredValidation]}
+                            />
+                            <Field
+                                name="address"
+                                component={GoogleAutoComplete}
+                                label="Address"
+                            />
+                            <Field
+                                component={RadioGroup}
+                                name="sex"
+                                label="Gender"
+                                options={[
+                                    { title: 'Male', value: 'male' },
+                                    { title: 'Female', value: 'female' }
+                                ]}
+                                validate={[requiredValidation]}
+                            />
+                        </div>
+                        <div className={classes.buttonsDiv}>
+                            <Link to={'/user/account'} style={{ textDecoration: 'none' }}>
+                                <Button name="Back" background="#C1CFE0" type="button"/>
                             </Link>
-                            <Button variant="contained" color="primary" type="submit">
-                                Forward
-                            </Button>
+                            <Button name="Forward" type="submit" />
                         </div>
                     </Grid>
                 </Grid>
@@ -120,5 +145,5 @@ Profile = reduxForm({
 export default withRouter(connect(
     mapStateToProps,
     null,
-)(Profile));
+)(withStyles(styles)(Profile)));
 

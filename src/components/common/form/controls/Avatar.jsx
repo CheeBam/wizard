@@ -6,12 +6,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 import { DEFAULT_AVATAR } from '../../../../helpers/constants';
 
-const styles = {
-    avatar: {
-        width: 150,
-        height: 150,
-    },
-};
+import { styles } from './styles.jsx';
+import { imageValidation } from "../../../../utils";
 
 class UserAvatar extends Component {
     constructor(props) {
@@ -21,6 +17,10 @@ class UserAvatar extends Component {
             imagePreviewUrl: DEFAULT_AVATAR,
         };
     }
+
+    state = {
+        error: null,
+    };
 
     static propTypes = {
         input: PropTypes.object,
@@ -37,26 +37,35 @@ class UserAvatar extends Component {
         const file = e.target.files[0];
         const reader = new FileReader();
 
-        reader.onloadend = () => {
-            onChange(reader.result);
-        };
+        if (file) {
+            reader.onloadend = async () => {
+                const validate = await imageValidation(reader.result);
 
-        reader.readAsDataURL(file);
+                if (validate == null) {
+                    onChange(reader.result);
+                } else {
+                    this.setState({ error: validate });
+                }
+            };
+
+            reader.readAsDataURL(file);
+        }
     };
 
     render() {
         const { input: { value }, classes } = this.props;
+        const { error } = this.state;
 
         return (
             <div className="picture-container">
-                <div className="picture">
+                <div className={classes.picture}>
                     <Avatar alt="Remy Sharp" src={ value } classes={{ root: classes.avatar }} />
-                    <input
-                        type="file"
-                        onChange={ e => this.encodeImageFileAsURL(e) }
-                    />
+                    <div className={classes.uploadBtnWrapper}>
+                        <button className={classes.uploadBtn}>+ add avatar</button>
+                        <input type="file" onClick={ () => { (this.setState({ error: null })) } } onChange={ e => this.encodeImageFileAsURL(e) } />
+                    </div>
+                    { error && (<p className={classes.avatarErrorMessage}>{ error }</p>) }
                 </div>
-                <h6 className="description">Choose Picture</h6>
             </div>
         );
     }

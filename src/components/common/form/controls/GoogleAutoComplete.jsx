@@ -1,12 +1,13 @@
 // GoogleAutocomplete.js
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TextField, Paper } from '@material-ui/core';
+import { Paper } from '@material-ui/core';
 // import { withStyles } from '@material-ui/core/styles';
 import PlacesAutocomplete from 'react-places-autocomplete';
-import {reduxForm} from "redux-form";
+import { reduxForm } from 'redux-form';
 
 import { scriptExists } from '../../../../helpers';
+import { TextInput } from './index';
 
 class GoogleAutocomplete extends React.Component {
 
@@ -52,7 +53,7 @@ class GoogleAutocomplete extends React.Component {
     };
 
     render() {
-        const { input, label, meta: { touched, error } } = this.props;
+        const { input, label, meta } = this.props;
         const { apiLoaded } = this.state;
         if (apiLoaded) {
             return (
@@ -64,18 +65,13 @@ class GoogleAutocomplete extends React.Component {
                 >
                     {({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
                         <div>
-                            <TextField
-                                variant="outlined"
-                                fullWidth={true}
-                                margin="normal"
+                            <TextInput
+                                input={input}
                                 label={label}
-                                type="text"
-                                placeholder="Search Places ..."
-                                className="location-search-input"
-                                error={!!(touched && error)}
-                                {...getInputProps()}
+                                 meta={meta}
+                                { ...getInputProps() }
                             />
-                            <div className="autocomplete-dropdown-container">
+                            <div className='autocomplete-dropdown-container'>
                                 {loading && <div>Loading...</div>}
                                 <Paper square>
                                     {suggestions.map(suggestion => {

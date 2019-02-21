@@ -10,7 +10,7 @@ import Header from './components/Header';
 
 const styles = {
     container: {
-        maxWidth: 970,
+        width: 970,
         margin: '0 auto',
         position: 'relative',
     },

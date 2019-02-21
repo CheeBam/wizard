@@ -7,3 +7,4 @@ export { default as PhoneInput } from './PhoneInput';
 export { default as RadioGroup } from './RadioGroup';
 export { default as Select } from './Select';
 export { default as TextInput } from './TextInput';
+export { default as CheckList } from './CheckList';

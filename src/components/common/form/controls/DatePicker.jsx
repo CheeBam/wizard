@@ -1,16 +1,26 @@
 import React from 'react';
-import DatePicker from 'react-datepicker';
 import { DateTime } from 'luxon';
-import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from 'react-datepicker';
 
-const ReactDatePicker = ({input, placeholder, defaultValue, meta: {touched, error} }) => {
+import 'react-datepicker/dist/react-datepicker.css';
+
+import { TextInput } from './index';
+
+const ReactDatePicker = props => {
+
+    const { input } = props;
+
     return (
-        <div>
-            <DatePicker {...input} onChange={(value) => {
+        <DatePicker
+            style={{ width: 300 }}
+            customInput={<TextInput {...props} />}
+            {...input}
+            onChange={(value) => {
                 input.onChange(DateTime.fromJSDate(value).toFormat('dd-MM-yy'));
-            }} dateForm="dd-MM-yy" selected={input.value ? DateTime.fromFormat(input.value, 'dd-MM-yy').toJSDate() : null} />
-            {touched && error && <span>{error}</span>}
-        </div>
+            }}
+            dateForm='dd-MM-yy'
+            selected={input.value ? DateTime.fromFormat(input.value, 'dd-MM-yy').toJSDate() : null}
+        />
     );
 };
 

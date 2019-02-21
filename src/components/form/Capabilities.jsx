@@ -2,38 +2,41 @@ import React, { Component } from 'react';
 // eslint-disable-next-line
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {Field, reduxForm, SubmissionError} from 'redux-form';
+import { Link } from "react-router-dom";
+import { Field, reduxForm, SubmissionError} from 'redux-form';
 import { getHobbiesAction, getSkillsAction } from '../../actions/staticActions';
 
-import { Grid, Button, FormGroup, FormLabel, Checkbox } from '@material-ui/core';
+import {Grid, withStyles} from '@material-ui/core';
 
-import { Select, MultiTextInput } from '../common/form/controls';
+import { Select, MultiTextInput, CheckList } from '../common/form/controls';
+import { Button } from '../common/form/buttons';
 
 import { minCountValidation, maxLengthValidation } from '../../utils';
 
-const renderCheckboxGroup = ({ name, options, input }) => {
-    return options.map((option, i) => (
-        <div key={i}>
-            <Checkbox
-                name={`${name}[${i}]`}
-                defaultChecked={input.value.indexOf(option.value) !== -1}
-                label={option.label}
-                onChange={(e, checked) => {
-                    let newValue = [...input.value];
-                    if (checked){
-                        newValue.push(option.value);
-                    } else {
-                        newValue.splice(newValue.indexOf(option.value), 1);
-                    }
-                    return input.onChange(newValue);
-                }}
-            />
-            { option.label }
-        </div>
-    ));
-};
-
 const maxLength300 = maxLengthValidation(300);
+
+const styles = {
+    container: {
+        paddingTop: 43,
+        background: '#FAFCFF',
+    },
+    formInputs: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: 300,
+    },
+    grid: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+    },
+    buttonsDiv: {
+        marginTop: 50,
+        display: 'flex',
+        justifyContent: 'space-between',
+        width: 300,
+    }
+};
 
 class Capabilities extends Component {
     componentDidMount() {
@@ -58,46 +61,47 @@ class Capabilities extends Component {
     };
 
     render() {
-        const { handleSubmit, skills, hobbies } = this.props;
+        const { handleSubmit, skills, hobbies, classes } = this.props;
 
         return (
             <form onSubmit={handleSubmit(this.submit)}>
                 <Grid
                     container
-                    spacing={8}
-                    justify="center"
+                    className={classes.container}
                 >
-                    <Grid item lg={6} md={6} xs={6}>
-                        <Field
-                            name="skills"
-                            label="Skills"
-                            component={Select}
-                            options={[...skills]}
-                            multiple
-                        />
-                        <Field
-                            rows={4}
-                            name="additional"
-                            type="text"
-                            component={MultiTextInput}
-                            label="Additional information-"
-                            validate={[maxLength300]}
-                        />
-
+                    <Grid item lg={6} md={6} xs={6} className={classes.grid}>
+                        <div className={classes.formInputs}>
+                            <Field
+                                name="skills"
+                                label="Skills"
+                                component={Select}
+                                options={[...skills]}
+                                multiple
+                            />
+                            <Field
+                                rows={4}
+                                name="additional"
+                                type="text"
+                                component={MultiTextInput}
+                                label="Additional information"
+                                validate={[maxLength300]}
+                            />
+                        </div>
                     </Grid>
-                    <Grid item lg={6} md={6} xs={6}>
-                        <FormLabel component="legend">Hobbies</FormLabel>
-                        <FormGroup>
+                    <Grid item lg={6} md={6} xs={6} className={classes.grid}>
+                        <div className={classes.formInputs}>
                             <Field
                                 name="hobbies"
-                                component={renderCheckboxGroup}
+                                component={CheckList}
+                                label="Hobbies"
                                 options={hobbies}
                             />
-                        </FormGroup>
-                        <div>
-                            <Button variant="contained" color="secondary" type="submit">
-                                Finish
-                            </Button>
+                        </div>
+                        <div className={classes.buttonsDiv}>
+                            <Link to={'/user/profile'} style={{ textDecoration: 'none' }}>
+                                <Button name="Back" background="#C1CFE0" type="button" />
+                            </Link>
+                            <Button type="submit" background="#4EE4A5" name="Forward" />
                         </div>
                     </Grid>
                 </Grid>
@@ -127,5 +131,5 @@ Capabilities = reduxForm({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Capabilities);
+)(withStyles(styles)(Capabilities));
 

@@ -28,21 +28,37 @@ import Capabilities from "./Capabilities";
 
 const styles = {
     tabs: {
+        color: '#9BB0CB',
         background: '#EBF1FC',
     },
+    tabRoot: {
+        fontFamily: 'Roboto',
+        fontStyle: 'normal',
+        fontWeight: 'bold',
+        lineHeight: 'normal',
+        fontSize: 24,
+        textTransform: 'capitalize',
+        height: 60,
+    },
     selected: {
-        background: '#5787DD',
+        color: '#fff',
+        background: '#4E86E4',
     },
     indicator: {
         background: 'transparent',
     },
     toolbar: {
+        background: '#5E97F3',
         display: 'flex',
         justifyContent: 'space-between',
+        height: 43,
     },
     toolbarString: {
         display: 'flex',
         alignItems: 'center',
+    },
+    textLink: {
+        fontWeight: 'bold',
     }
 };
 
@@ -72,7 +88,7 @@ class Wrapper extends Component {
         } else {
             getDraftUser();
             if (url !== '/user/account') {
-                // history.replace('/user/account');
+                history.replace('/user/account');
             }
         }
     }
@@ -110,7 +126,9 @@ class Wrapper extends Component {
                                 You have an unsaved user data. Do you want to complete it?
                             </Typography>
                             &nbsp;
+                            &nbsp;
                             <MaterialLink
+                                classes={{ root: classes.textLink }}
                                 component="button"
                                 variant="caption"
                                 color="inherit"
@@ -171,10 +189,11 @@ class Wrapper extends Component {
     render() {
         const { match: { params: { tab, id } }, classes } = this.props;
         const { step, isEdit } = this.state;
+        const link = isEdit ? { label: 'User Profile', to: `/info/${id}`} : null;
 
         return (
             <Fragment>
-                <PageTitle title={isEdit ? 'Editing' : 'Add new user'} />
+                <PageTitle title={isEdit ? 'Editing' : 'Add new user'} link={link} />
                 <Tabs value={tab}
                       classes={{
                           root: classes.tabs,
@@ -183,6 +202,7 @@ class Wrapper extends Component {
                       variant="fullWidth">
                     <Tab
                         classes={{
+                            root: classes.tabRoot,
                             selected: classes.selected,
                         }}
                         label="1. Account"
@@ -192,33 +212,36 @@ class Wrapper extends Component {
                     />
                     <Tab
                         classes={{
+                            root: classes.tabRoot,
                             selected: classes.selected,
                         }}
                         label="2. Profile"
                         value="profile"
                         component={Link}
                         to={`/user/profile/${id || ''}`}
-                        // disabled={!isEdit && step < 2}
+                        disabled={!isEdit && step < 2}
                     />
                     <Tab
                         classes={{
+                            root: classes.tabRoot,
                             selected: classes.selected,
                         }}
                         label="3. Contacts"
                         value="contacts"
                         component={Link}
                         to={`/user/contacts/${id || ''}`}
-                        // disabled={!isEdit && step < 3}
+                        disabled={!isEdit && step < 3}
                     />
                     <Tab
                         classes={{
+                            root: classes.tabRoot,
                             selected: classes.selected,
                         }}
                         label="4. Capabilities"
                         value="capabilities"
                         component={Link}
                         to={`/user/capabilities/${id || ''}`}
-                        // disabled={!isEdit && step < 4}
+                        disabled={!isEdit && step < 4}
                     />
                 </Tabs>
                 { this.renderDraft() }
